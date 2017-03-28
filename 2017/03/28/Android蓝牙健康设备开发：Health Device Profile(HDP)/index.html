@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android蓝牙健康设备开发：Health Device Profile(HDP) | Yiyuan Liu&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。1、相关概念HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android蓝牙健康设备开发：Health Device Profile(HDP)">
+<meta property="og:url" content="http://yoursite.com/2017/03/28/Android蓝牙健康设备开发：Health Device Profile(HDP)/index.html">
+<meta property="og:site_name" content="Yiyuan Liu's Blog">
+<meta property="og:description" content="最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。1、相关概念HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profi">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-d1818590b10765c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-4b89d2b3d45c3799.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-4e3639c3eb79df27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-3d16b1f565818953.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-dc9a150422a28ca0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-03-28T07:57:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android蓝牙健康设备开发：Health Device Profile(HDP)">
+<meta name="twitter:description" content="最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。1、相关概念HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profi">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1972331-d1818590b10765c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternate" href="/atom.xml" title="Yiyuan Liu&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Yiyuan Liu&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Android蓝牙健康设备开发：Health Device Profile(HDP)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/28/Android蓝牙健康设备开发：Health Device Profile(HDP)/" class="article-date">
+  <time datetime="2017-03-28T07:57:47.000Z" itemprop="datePublished">2017-03-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android开发/">Android开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android蓝牙健康设备开发：Health Device Profile(HDP)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。<br>1、相关概念<br>HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profile，由蓝牙技术联盟（Bluetooth SIG）发布。并不是所有蓝牙设备都可以采用HDP，只有经典蓝牙（BR/EDR）设备才可以。低功耗蓝牙设备，即蓝牙4.0及以上，采用的是GATT等profile。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-d1818590b10765c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>上图是HDP的协议栈。在通信时，蓝牙健康设备作为source，Android手机作为sink。图中L2CAP、SDP、MCAP是蓝牙通信的底层协议，中间是IEEE11073协议。11073是IEEE发布的一个健康设备的协议簇，其下包含了许多不同种类的健康设备协议，如11073-10407是血压计的协议。在数据传输时，手机与健康设备根据此协议来发送请求、解析数据等。最上层的application在本文中自然指的就是Android app。<br>Android蓝牙模块：android.bluetooth是蓝牙的开发包，里面包含了所有蓝牙相关的类，无论是经典蓝牙还是低功耗蓝牙。其中，本文重点关注的是BluetoothHealth这个类，还用到了一些蓝牙基础类BluetoothAdapter BluetoothDevice等，在这里就不展开介绍了。BluetoothHealth是在API14时引入的，所以系统版本高于14的Android手机都可以与采用HDP的健康设备通信。BluetoothHealth中包括了与HDP设备建立通信的API，具体请参见<a href="https://developer.android.com/reference/android/bluetooth/BluetoothHealth.html" target="_blank" rel="external">官方文档</a>。在官方文档中有一个建立通信的流程：<br>1、调用<a href="https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.html#getProfileProxy(android.content.Context, android.bluetooth.BluetoothProfile.ServiceListener, int" target="_blank" rel="external">getProfileProxy(Context, BluetoothProfile.ServiceListener, int)</a>)来获取代理对象的连接。<br>2、创建BluetoothHealthCallback回调，调用<a href="https://developer.android.com/reference/android/bluetooth/BluetoothHealth.html#registerSinkAppConfiguration(java.lang.String, int, android.bluetooth.BluetoothHealthCallback" target="_blank" rel="external">registerSinkAppConfiguration(String, int, BluetoothHealthCallback)</a>)注册一个sink端的应用程序配置。<br>3、将手机与健康设备配对，这一步一般在手机的“设置”中完成。<br>4、使用<a href="https://developer.android.com/reference/android/bluetooth/BluetoothHealth.html#connectChannelToSource(android.bluetooth.BluetoothDevice, android.bluetooth.BluetoothHealthAppConfiguration" target="_blank" rel="external">connectChannelToSource(BluetoothDevice, BluetoothHealthAppConfiguration)</a>)来建立一个与健康设备的通信channel。有的设备会自动建立通信，不需要在代码中调用这个方法。第二步中的回调会指示channel的状态变化。<br>5、用ParcelFileDescriptor来读取健康设备传来的数据，并根据IEEE 11073来解析数据。<br>6、通信结束后，关闭通信channel，注销应用程序配置。<br>看完这个流程是不是一脸懵逼？不要慌，这里官方文档实在太抽象了，必须要配合实际的代码才能看懂。<br>2、demo代码<br>项目的目标是与经典蓝牙血压计进行通信，获取血压计测量的数值和日期。这里血压计的型号是A&amp;D UA-767PBT-C。项目中的代码是以github上<a href="https://github.com/andengineering/A-D-HDP-Android-Demo" target="_blank" rel="external">这个项目</a>为基础，根据需求进行修改而实现的。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-4b89d2b3d45c3799.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="">项目结构</p>
+<p>上图是项目的结构，非常简单，只有一个activity和一个service。activity与用户交互，service绑定在activity中与蓝牙血压计建立通信、交换数据。<br>首先AndroidManifest.xml中注册蓝牙权限：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH&quot; /&gt;</div><div class="line">&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_ADMIN&quot;/&gt;</div></pre></td></tr></table></figure></p>
+<p>##MainActivity<br>主要作用是显示血压计传过来的数据，以及绑定服务。<br>activity的布局如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-4e3639c3eb79df27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="demo.png"></p>
+<p>上半部分是一个ArrayList,用于显示手机所配对的蓝牙设备的名称和Mac地址。下半部分会显示一次血压测量的参数：收缩压、舒张压、心率、测量时间。</p>
+<p>在MainActivity中一些重要私有变量：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private static final int REQUEST_ENABLE_BT = 1;  //用于打开手机蓝牙</div><div class="line">private static final int HEALTH_PROFILE_SOURCE_DATA_TYPE = 0x1007;  //IEEE 11073中规定的血压数据类型</div><div class="line">private BluetoothAdapter mBluetoothAdapter;</div><div class="line">private Messenger mHealthService;  //用于与service通信</div><div class="line">private boolean mHealthServiceBound; //用于判断service是否与此activity绑定</div></pre></td></tr></table></figure></p>
+<p>打开蓝牙：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">if (!mBluetoothAdapter.isEnabled()) &#123;</div><div class="line">     Intent enableIntent = new Intent(</div><div class="line">             BluetoothAdapter.ACTION_REQUEST_ENABLE);</div><div class="line">     startActivityForResult(enableIntent, REQUEST_ENABLE_BT);</div><div class="line"> &#125; else &#123;</div><div class="line">     initialize();</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>启动服务:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">// Sets up communication with HDPService.</div><div class="line">private ServiceConnection mConnection = new ServiceConnection() &#123;</div><div class="line">    public void onServiceConnected(ComponentName name, IBinder service) &#123;</div><div class="line">        mHealthServiceBound = true;</div><div class="line">        Message msg = Message.obtain(null,</div><div class="line">                HDPService.MSG_REG_CLIENT);</div><div class="line">        msg.replyTo = mMessenger;</div><div class="line">        mHealthService = new Messenger(service);</div><div class="line">        try &#123;</div><div class="line">            mHealthService.send(msg);</div><div class="line">            //register blood pressure data type</div><div class="line">            sendMessage(HDPService.MSG_REG_HEALTH_APP,</div><div class="line">                    HEALTH_PROFILE_SOURCE_DATA_TYPE);</div><div class="line">        &#125; catch (RemoteException e) &#123;</div><div class="line">            Log.w(TAG, &quot;Unable to register client to service.&quot;);</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    public void onServiceDisconnected(ComponentName name) &#123;</div><div class="line">        mHealthService = null;</div><div class="line">        mHealthServiceBound = false;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">private void initialize() &#123;</div><div class="line">    // Starts health service.</div><div class="line">    Intent intent = new Intent(this, HDPService.class);</div><div class="line">    //startService(intent);</div><div class="line">    bindService(intent, mConnection, Context.BIND_AUTO_CREATE);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>用handler和message来实现activity与service的通信：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">private Handler mIncomingHandler = new Handler() &#123;</div><div class="line">    @Override</div><div class="line">    public void handleMessage(Message msg) &#123;</div><div class="line">        switch (msg.what) &#123;</div><div class="line">          ......</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">private final Messenger mMessenger = new Messenger(mIncomingHandler);</div></pre></td></tr></table></figure></p>
+<p>##HDPService<br>这个service是核心部分，手机与蓝牙血压计的通信就是在此实现的。<br>service中部分重要私有变量:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private BluetoothHealthAppConfiguration mHealthAppConfig; //BluetoothHealthAppConfiguration</div><div class="line">private BluetoothAdapter mBluetoothAdapter;  //BluetoothAdapter</div><div class="line">private BluetoothHealth mBluetoothHealth;  //代理对象</div></pre></td></tr></table></figure></p>
+<p>在service中按照官方文档的流程一步一步实现与蓝牙血压计的通信。<br>1、获取代理对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public void onCreate() &#123;</div><div class="line">    super.onCreate();</div><div class="line">    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();</div><div class="line">    if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) &#123;</div><div class="line">        // Bluetooth adapter isn&apos;t available.  The client of the service is supposed to</div><div class="line">        // verify that it is available and activate before invoking this service.</div><div class="line">        stopSelf();</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    if (!mBluetoothAdapter.getProfileProxy(this, mBluetoothServiceListener,</div><div class="line">            BluetoothProfile.HEALTH)) &#123;</div><div class="line">        Toast.makeText(this, &quot;HDP not available&quot;,</div><div class="line">                Toast.LENGTH_LONG).show();</div><div class="line">        stopSelf();</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>代码中的mBluetoothServiceListener是一个回调，如果getProfileProxy方法返回为真，就进入回调。在回调中获取了代理对象属于BluetoothHealth类的proxy。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">private final BluetoothProfile.ServiceListener mBluetoothServiceListener =</div><div class="line">            new BluetoothProfile.ServiceListener() &#123;</div><div class="line">                public void onServiceConnected(int profile, BluetoothProfile proxy) &#123;</div><div class="line">                    if (profile == BluetoothProfile.HEALTH) &#123;</div><div class="line">                        mBluetoothHealth = (BluetoothHealth) proxy;</div><div class="line">                        Log.d(TAG, &quot;onServiceConnected to profile: &quot; + profile);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                public void onServiceDisconnected(int profile) &#123;</div><div class="line">                    if (profile == BluetoothProfile.HEALTH) &#123;</div><div class="line">                        mBluetoothHealth = null;</div><div class="line">                    &#125;</div><div class="line">                    Log.d(TAG, &quot;onServiceDisconnected&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125;;</div></pre></td></tr></table></figure></p>
+<p>2、注册BluetoothHealthAppConfiguration:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mBluetoothHealth.registerSinkAppConfiguration(TAG, dataType, mHealthCallback);</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line">private final BluetoothHealthCallback mHealthCallback = new BluetoothHealthCallback() &#123;</div><div class="line">        // Callback to handle application registration and unregistration events.  The service</div><div class="line">        // passes the status back to the UI client.</div><div class="line">        public void onHealthAppConfigurationStatusChange(BluetoothHealthAppConfiguration config,</div><div class="line">                                                         int status) &#123;</div><div class="line">            if (status == BluetoothHealth.APP_CONFIG_REGISTRATION_FAILURE) &#123;</div><div class="line">                mHealthAppConfig = null;</div><div class="line">                sendMessage(STATUS_HEALTH_APP_REG, RESULT_FAIL, null);</div><div class="line">                Log.d(TAG, &quot;APP_CONFIG_REGISTRATION_FAILURE&quot;);</div><div class="line">            &#125; else if (status == BluetoothHealth.APP_CONFIG_REGISTRATION_SUCCESS) &#123;</div><div class="line">                mHealthAppConfig = config;</div><div class="line">                sendMessage(STATUS_HEALTH_APP_REG, RESULT_OK, null);</div><div class="line">                Log.d(TAG, &quot;APP_CONFIG_REGISTRATION_SUCCESS&quot;);</div><div class="line">            &#125; else if (status == BluetoothHealth.APP_CONFIG_UNREGISTRATION_FAILURE ||</div><div class="line">                    status == BluetoothHealth.APP_CONFIG_UNREGISTRATION_SUCCESS) &#123;</div><div class="line">                sendMessage(STATUS_HEALTH_APP_UNREG,</div><div class="line">                        status == BluetoothHealth.APP_CONFIG_UNREGISTRATION_SUCCESS ?</div><div class="line">                                RESULT_OK : RESULT_FAIL, null);</div><div class="line">                Log.d(TAG, &quot;UNREGISTRATION&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // Callback to handle channel connection state changes.</div><div class="line">        // Note that the logic of the state machine may need to be modified based on the HDP device.</div><div class="line">        // When the HDP device is connected, the received file descriptor is passed to the</div><div class="line">        // ReadThread to read the content.</div><div class="line">        public void onHealthChannelStateChange(BluetoothHealthAppConfiguration config,</div><div class="line">                                               BluetoothDevice device, int prevState, int newState, ParcelFileDescriptor fd,</div><div class="line">                                               int channelId) &#123;</div><div class="line">//            if (Log.isLoggable(TAG, Log.DEBUG))</div><div class="line">            Log.d(TAG, String.format(&quot;prevState\t%d ----------&gt; newState\t%d&quot;,</div><div class="line">                    prevState, newState));</div><div class="line">            if (prevState == BluetoothHealth.STATE_CHANNEL_CONNECTING &amp;&amp;</div><div class="line">                    newState == BluetoothHealth.STATE_CHANNEL_CONNECTED) &#123;</div><div class="line">                if (config.equals(mHealthAppConfig)) &#123;</div><div class="line">                    mChannelId = channelId;</div><div class="line">                    sendMessage(STATUS_CREATE_CHANNEL, RESULT_OK, null);</div><div class="line">                    (new ReadThread(fd)).start();</div><div class="line">                &#125; else &#123;</div><div class="line">                    sendMessage(STATUS_CREATE_CHANNEL, RESULT_FAIL, null);</div><div class="line">                &#125;</div><div class="line">            &#125; else if (prevState == BluetoothHealth.STATE_CHANNEL_CONNECTING &amp;&amp;</div><div class="line">                    newState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED) &#123;</div><div class="line">                sendMessage(STATUS_CREATE_CHANNEL, RESULT_FAIL, null);</div><div class="line">            &#125; else if (newState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED) &#123;</div><div class="line">                Log.d(TAG, &quot;I&apos;m in State Channel Disconnected.&quot;);</div><div class="line">                if (config.equals(mHealthAppConfig)) &#123;</div><div class="line">                    sendMessage(STATUS_DESTROY_CHANNEL, RESULT_OK, null);</div><div class="line"></div><div class="line">                &#125; else &#123;</div><div class="line">                    sendMessage(STATUS_DESTROY_CHANNEL, RESULT_FAIL, null);</div><div class="line">                &#125;</div><div class="line">            &#125; else if (prevState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED &amp;&amp;</div><div class="line">                    newState == BluetoothHealth.STATE_CHANNEL_CONNECTED) &#123;</div><div class="line">                if (config.equals(mHealthAppConfig)) &#123;</div><div class="line">                    mChannelId = channelId;</div><div class="line">                    sendMessage(STATUS_CREATE_CHANNEL, RESULT_OK, null);</div><div class="line">                    (new ReadThread(fd)).start();</div><div class="line">                &#125; else &#123;</div><div class="line">                    sendMessage(STATUS_CREATE_CHANNEL, RESULT_FAIL, null);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<p>mHealthCallback是其中的关键，有两个方法onHealthAppConfigurationStatusChange和onHealthChannelStateChange。<br>onHealthAppConfigurationStatusChange回调会监听AppConfiguration的状态，会在registerSinkAppConfiguration函数返回后调用。<br>onHealthChannelStateChange回调会监听与source端（在这里也就是血压计）通信通道的状态变化，如果收到发来的数据，会接收到一个ParcelFileDescriptor用于读取。</p>
+<p>3、将手机与健康设备配对<br>这一步在手机的系统设置中进行，不必严格按照这个流程的顺序，可以事先配对好。</p>
+<p>4、建立通信通道<br>这一步不是所有设备都需要，部分设备会自动建立通道与sink端（手机）进行通信。我们所用的这个蓝牙血压计就是如此，会自动建立通道。<br>如果不能自动建立通信，可以主动调用如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mBluetoothHealth.connectChannelToSource(mDevice, mHealthAppConfig);</div></pre></td></tr></table></figure></p>
+<p>mDevice是将要建立通信的source端，可以用mBluetoothAdapter获取与手机配对的任一设备。</p>
+<p>5、读取、解析数据<br>在与蓝牙设备通信时，我们需要知道一点：通信是双向的，设备会向手机发信息，手机可以也需要向设备发信息。在service中建了两个线程，一个用于读数据，一个用于写数据，通过这两个线程实现与设备的数据交换。</p>
+<p>首先看读线程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">private class ReadThread extends Thread &#123;</div><div class="line">    private ParcelFileDescriptor mFd;</div><div class="line"></div><div class="line">    public ReadThread(ParcelFileDescriptor fd) &#123;</div><div class="line">        super();</div><div class="line">        mFd = fd;</div><div class="line">        Log.i(TAG, &quot;read thread&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">      ...</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>读线程的调用是在回调方法onHealthChannelStateChange中的，当判断通信通道打开时，会开启一个读线程，并且将回调中提供的ParcelFileDescriptor传入读线程的构造方法，用于读取数据。<br>具体的读取和解析过程我们来看run方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line">FileInputStream fis = new FileInputStream(mFd.getFileDescriptor());</div><div class="line">            byte data[] = new byte[300]; //假定有300byte的数据</div><div class="line">            try &#123;</div><div class="line">                while (fis.read(data) &gt; -1) &#123;</div><div class="line">                    if (data[0] != (byte) 0x00) &#123;</div><div class="line">                        String test = byte2hex(data);</div><div class="line">                        Log.i(TAG, &quot;test: &quot; + test);</div><div class="line">                        if (data[0] == (byte) 0xE2) &#123;</div><div class="line">                            Log.i(TAG, &quot;E2&quot;);</div><div class="line">                            //data_AR</div><div class="line">                            count = 1;</div><div class="line">                            (new WriteThread(mFd)).start();</div><div class="line">                            try &#123;</div><div class="line">                                sleep(100);</div><div class="line">                            &#125; catch (InterruptedException e) &#123;</div><div class="line">                                e.printStackTrace();</div><div class="line">                            &#125;</div><div class="line">                            count = 2;</div><div class="line">                            (new WriteThread(mFd)).start();</div><div class="line">                        &#125; else if (data[0] == (byte) 0xE7) &#123;</div><div class="line">                            Log.i(TAG, &quot;E7&quot;);</div><div class="line">                            if (data[18] == (byte) 0x0d &amp;&amp; data[19] == (byte) 0x1d)  //fixed report</div><div class="line">                            &#123;</div><div class="line">                                count = 3;</div><div class="line">                                //set invoke id so get correct response</div><div class="line">                                invoke = new byte[]&#123;data[6], data[7]&#125;;</div><div class="line">                                //write back response</div><div class="line">                                (new WriteThread(mFd)).start();</div><div class="line">                                //parse data!!</div><div class="line"></div><div class="line">                                int length = data[21];</div><div class="line">                                Log.i(TAG, &quot;length is &quot; + length);</div><div class="line">                                int number_of_data_packets = data[22 + 5]; //03</div><div class="line">                                //packet_start starts from handle 0 byte</div><div class="line">                                int packet_start = 30; </div><div class="line">                                final int SYS_DIA_MAP_DATA = 1;</div><div class="line">                                final int PULSE_DATA = 2;</div><div class="line">                                final int ERROR_CODE_DATA = 3;</div><div class="line">                                for (int i = 0; i &lt; number_of_data_packets; i++) &#123;</div><div class="line">                                    int obj_handle = data[packet_start + 1]; </div><div class="line">                                    switch (obj_handle) &#123;</div><div class="line">                                        case SYS_DIA_MAP_DATA:</div><div class="line">                                            int sys = byteToUnsignedInt(data[packet_start + 9]);</div><div class="line">                                            int dia = byteToUnsignedInt(data[packet_start + 11]);</div><div class="line">                                            int map = byteToUnsignedInt(data[packet_start + 13]);</div><div class="line">                                            //create team string... 9+13~9+20</div><div class="line">                                            Log.i(TAG, &quot;sys is &quot; + sys);</div><div class="line">                                            sendMessage(RECEIVED_SYS, sys, null);</div><div class="line">                                            Log.i(TAG, &quot;dia is &quot; + dia);</div><div class="line">                                            sendMessage(RECEIVED_DIA, dia, null);</div><div class="line">                                            Log.i(TAG, &quot;map is &quot; + map);</div><div class="line">                                            break;</div><div class="line">                                        case PULSE_DATA:</div><div class="line">                                            //parse</div><div class="line">                                            int pulse = byteToUnsignedInt(data[packet_start + 5]);</div><div class="line">                                            Log.i(TAG, &quot;pulse is &quot; + pulse);</div><div class="line">                                            sendMessage(RECEIVED_PUL, pulse, null);</div><div class="line">                                            String month = byteToString(data[packet_start + 8]);</div><div class="line">                                            String day = byteToString(data[packet_start + 9]);</div><div class="line">                                            String year = byteToString(data[packet_start + 6]) + byteToString(data[packet_start + 7]);</div><div class="line">                                            String hour = byteToString(data[packet_start + 10]);</div><div class="line">                                            String minute = byteToString(data[packet_start + 11]);</div><div class="line">                                            String date = year + &quot;.&quot; + month + &quot;.&quot; + day + &quot; &quot; + hour + &quot;:&quot; + minute;</div><div class="line">                                            Log.v(TAG, &quot;the date is &quot; + date);</div><div class="line">                                            sendMessage(RECEIVED_DATE, 0, date);</div><div class="line">                                            break;</div><div class="line">                                        case ERROR_CODE_DATA:</div><div class="line">                                            //need more signal</div><div class="line">                                            break;</div><div class="line">                                    &#125;</div><div class="line">                                    packet_start += 4 + data[packet_start + 3];    //4 = ignore beginning four bytes</div><div class="line">                                &#125;</div><div class="line">                            &#125; else &#123;</div><div class="line">                                count = 2;</div><div class="line">                            &#125;</div><div class="line">                        &#125; else if (data[0] == (byte) 0xE4) &#123;</div><div class="line">                            count = 4;</div><div class="line">                            (new WriteThread(mFd)).start();</div><div class="line">                        &#125;</div><div class="line">                        //zero out the data</div><div class="line">                        for (int i = 0; i &lt; data.length; i++) &#123;</div><div class="line">                            data[i] = (byte) 0x00;</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                    sendMessage(STATUS_READ_DATA, 0, null);</div><div class="line">                &#125;</div><div class="line">            &#125; catch (IOException ioe) &#123;</div><div class="line">            &#125;</div><div class="line">            if (mFd != null) &#123;</div><div class="line">                try &#123;</div><div class="line">                    mFd.close();</div><div class="line">                &#125; catch (IOException e) &#123; /* Do nothing. */ &#125;</div><div class="line">            &#125;</div><div class="line">            sendMessage(STATUS_READ_DATA_DONE, 0, null);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>while循环中是对读取数据的解析，这里的解析必须参考IEEE 11073中的内容。这个demo用到了血压计，因此就要使用IEEE 11073－10407（专门针对血压计的协议）。使用其他类型的设备也就要使用相应的IEEE 11073－xxxxx协议。<br>回到demo中的数据读取和解析，这是一个根据IEEE 11073－10407进行手机与蓝牙设备互相发送数据的过程，下图是运行的log：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-3d16b1f565818953.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="log.png"></p>
+<p>大致解释一下流程：<br>按下测量按钮后，蓝牙血压计发来一个e2开头的数据，这是一个请求连接的信号。<br>收到请求连接后，手机用写线程发送给血压计一个回复同意连接，接着再发送一个数据请求血压计的特征。<br>血压计发来一个e7开头的数据，回复血压计的特征。<br>测量完毕后，血压计发来一个e7开头的数据，是这次测量的报告。<br>手机回复确认收到测量数据。<br>血压计发来一个e4开头的数据，请求断开连接。<br>手机回复确认断开连接。</p>
+<p>想要查看详细数据请看IEEE 11073－10407！请看IEEE 11073－10407！请看IEEE 11073－10407！</p>
+<p>接下去是写线程：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line">private class WriteThread extends Thread &#123;</div><div class="line">        private ParcelFileDescriptor mFd;</div><div class="line"></div><div class="line">        public WriteThread(ParcelFileDescriptor fd) &#123;</div><div class="line">            super();</div><div class="line">            mFd = fd;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void run() &#123;</div><div class="line">            FileOutputStream fos = new FileOutputStream(mFd.getFileDescriptor());</div><div class="line">//        	Association Response [0xE300]</div><div class="line">            final byte data_AR[] = new byte[]&#123;(byte) 0xE3, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x2C,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x50, (byte) 0x79,</div><div class="line">                    (byte) 0x00, (byte) 0x26,</div><div class="line">                    (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x80, (byte) 0x00,</div><div class="line">                    (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x08,  //bt add for phone, can be automate in the future</div><div class="line">                    (byte) 0x3C, (byte) 0x5A, (byte) 0x37, (byte) 0xFF,</div><div class="line">                    (byte) 0xFE, (byte) 0x95, (byte) 0xEE, (byte) 0xE3,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00&#125;;</div><div class="line">//          Presentation APDU [0xE700]</div><div class="line">            final byte data_DR[] = new byte[]&#123;(byte) 0xE7, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x12,</div><div class="line">                    (byte) 0x00, (byte) 0x10,</div><div class="line">                    (byte) invoke[0], (byte) invoke[1],</div><div class="line">                    (byte) 0x02, (byte) 0x01,</div><div class="line">                    (byte) 0x00, (byte) 0x0A,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x0D, (byte) 0x1D,</div><div class="line">                    (byte) 0x00, (byte) 0x00&#125;;</div><div class="line"></div><div class="line">            final byte get_MDS[] = new byte[]&#123;(byte) 0xE7, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x0E,</div><div class="line">                    (byte) 0x00, (byte) 0x0C,</div><div class="line">                    (byte) 0x00, (byte) 0x24,</div><div class="line">                    (byte) 0x01, (byte) 0x03,</div><div class="line">                    (byte) 0x00, (byte) 0x06,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00&#125;;</div><div class="line"></div><div class="line">            final byte data_RR[] = new byte[]&#123;(byte) 0xE5, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x02,</div><div class="line">                    (byte) 0x00, (byte) 0x00&#125;;</div><div class="line"></div><div class="line">            try &#123;</div><div class="line">                Log.i(TAG, String.valueOf(count));</div><div class="line">                if (count == 1) &#123;</div><div class="line">                    fos.write(data_AR);</div><div class="line">                    Log.i(TAG, &quot;Association Responsed!&quot;);</div><div class="line">                &#125; else if (count == 2) &#123;</div><div class="line">                    fos.write(get_MDS);</div><div class="line">                    Log.i(TAG, &quot;Get MDS object attributes!&quot;);</div><div class="line">//            		fos.write(data_ABORT);</div><div class="line">                &#125; else if (count == 3) &#123;</div><div class="line">                    fos.write(data_DR);</div><div class="line">                    Log.i(TAG, &quot;Data Responsed!&quot;);</div><div class="line">                &#125; else if (count == 4) &#123;</div><div class="line">                    fos.write(data_RR);</div><div class="line">                    Log.i(TAG, &quot;Data Released!&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125; catch (IOException ioe) &#123;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>写线程的逻辑非常清晰，就是通过同一个ParcelFileDescriptor向血压计发送数据。发送的数据在这里已经写死，一共四组数据：作用依次是确认连接请求；确认收到测量数据；请求血压计的特征；确认断开连接。</p>
+<p>大功告成，收到数据后界面如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-dc9a150422a28ca0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Screenshot_2016-09-18-09-53-32.png"></p>
+<p>第一次写文章，有各种不足之处，请大家指正。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/03/28/Android蓝牙健康设备开发：Health Device Profile(HDP)/" data-id="cj0t97vlm00012di3pc3xs6tf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/03/28/AFNetworking 3.x 使用心得/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WordNet
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/03/27/seamcarving/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SeamCarving</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android开发/">Android开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS开发/">iOS开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/03/28/CoreBluetooth连接蓝牙健康设备/">CoreBluetooth连接蓝牙健康设备</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/28/AFNetworking 3.x 使用心得/">WordNet</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/28/Android蓝牙健康设备开发：Health Device Profile(HDP)/">Android蓝牙健康设备开发：Health Device Profile(HDP)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/27/seamcarving/">SeamCarving</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/27/wordnet/">WordNet</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Yiyuan Liu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
