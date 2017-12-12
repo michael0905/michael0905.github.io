@@ -6,14 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Yiyuan Liu&#39;s Blog</title>
+  <title>Android蓝牙健康设备开发：Health Device Profile(HDP) | Yiyuan Liu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Yiyuan Liu's Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。1、相关概念HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android蓝牙健康设备开发：Health Device Profile(HDP)">
+<meta property="og:url" content="http://yoursite.com/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/index.html">
 <meta property="og:site_name" content="Yiyuan Liu's Blog">
+<meta property="og:description" content="最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。1、相关概念HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profi">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-d1818590b10765c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-4b89d2b3d45c3799.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-4e3639c3eb79df27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-3d16b1f565818953.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-dc9a150422a28ca0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-12-12T07:42:03.595Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Yiyuan Liu's Blog">
+<meta name="twitter:title" content="Android蓝牙健康设备开发：Health Device Profile(HDP)">
+<meta name="twitter:description" content="最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。1、相关概念HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profi">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1972331-d1818590b10765c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="Yiyuan Liu&#39;s Blog" type="application/atom+xml">
   
@@ -135,557 +145,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-Tensorflow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-Android蓝牙健康设备开发：Health Device Profile(HDP)" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/12/Tensorflow/">Tensorflow实践：用神经网络训练分类器</a>
-    </h1>
-  
-
-        
-        <a href="/2017/12/12/Tensorflow/" class="archive-article-date">
-  	<time datetime="2017-12-12T07:48:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="任务："><a href="#任务：" class="headerlink" title="任务："></a>任务：</h3><p>使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：<br><img src="http://upload-images.jianshu.io/upload_images/1972331-342260dd468676cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="螺旋形数据点"></p>
-<h3 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h3><p>数据点一共有三个类别，而且是螺旋形交织在一起，显然是线性不可分的，需要一个非线性的分类器。这里选择神经网络。<br>输入的数据点是二维的，因此每个点只有x,y坐标这个原始特征。这里设计的神经网络有两个隐藏层，每层有50个神经元，足够抓住数据点的高维特征（实际上每层10个都够用了）。最后输出层是一个逻辑回归，根据隐藏层计算出的50个特征来预测数据点的分类（红、黄、蓝）。<br>一般训练数据多的话，应该用随机梯度下降来训练神经网络，这里训练数据较少（300），就直接批量梯度下降了。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 导入包、初始化</span></div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"></div><div class="line">%matplotlib inline</div><div class="line">plt.rcParams[<span class="string">'figure.figsize'</span>] = (<span class="number">10.0</span>, <span class="number">8.0</span>) <span class="comment"># set default size of plots</span></div><div class="line">plt.rcParams[<span class="string">'image.interpolation'</span>] = <span class="string">'nearest'</span></div><div class="line">plt.rcParams[<span class="string">'image.cmap'</span>] = <span class="string">'gray'</span></div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成螺旋形的线形不可分数据点</span></div><div class="line">np.random.seed(<span class="number">0</span>)</div><div class="line">N = <span class="number">100</span> <span class="comment"># 每个类的数据个数</span></div><div class="line">D = <span class="number">2</span> <span class="comment"># 输入维度</span></div><div class="line">K = <span class="number">3</span> <span class="comment"># 类的个数</span></div><div class="line">X = np.zeros((N*K,D))</div><div class="line">num_train_examples = X.shape[<span class="number">0</span>]</div><div class="line">y = np.zeros(N*K, dtype=<span class="string">'uint8'</span>)</div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> xrange(K):</div><div class="line">  ix = range(N*j,N*(j+<span class="number">1</span>))</div><div class="line">  r = np.linspace(<span class="number">0.0</span>,<span class="number">1</span>,N) <span class="comment"># radius</span></div><div class="line">  t = np.linspace(j*<span class="number">4</span>,(j+<span class="number">1</span>)*<span class="number">4</span>,N) + np.random.randn(N)*<span class="number">0.2</span> <span class="comment"># theta</span></div><div class="line">  X[ix] = np.c_[r*np.sin(t), r*np.cos(t)]</div><div class="line">  y[ix] = j</div><div class="line">fig = plt.figure()</div><div class="line">plt.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y, s=<span class="number">40</span>, cmap=plt.cm.Spectral)</div><div class="line">plt.xlim([<span class="number">-1</span>,<span class="number">1</span>])</div><div class="line">plt.ylim([<span class="number">-1</span>,<span class="number">1</span>])</div></pre></td></tr></table></figure>
-<p><img src="http://upload-images.jianshu.io/upload_images/1972331-342260dd468676cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="螺旋形数据点"></p>
-<p>打印输出输入X和label的shape<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">num_label = <span class="number">3</span></div><div class="line">labels = (np.arange(num_label) == y[:,<span class="keyword">None</span>]).astype(np.float32)</div><div class="line">labels.shape</div></pre></td></tr></table></figure></p>
-<pre><code>(300, 3)
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">X.shape</div></pre></td></tr></table></figure>
-<pre><code>(300, 2)
-</code></pre><p>用tensorflow构建神经网络<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> math</div><div class="line"></div><div class="line">N = <span class="number">100</span> <span class="comment"># 每个类的数据个数</span></div><div class="line">D = <span class="number">2</span> <span class="comment"># 输入维度</span></div><div class="line">num_label = <span class="number">3</span> <span class="comment"># 类的个数</span></div><div class="line">num_data = N * num_label</div><div class="line">hidden_size_1 = <span class="number">50</span></div><div class="line">hidden_size_2 = <span class="number">50</span></div><div class="line"></div><div class="line">beta = <span class="number">0.001</span> <span class="comment"># L2 正则化系数</span></div><div class="line">learning_rate = <span class="number">0.1</span> <span class="comment"># 学习速率</span></div><div class="line"></div><div class="line">labels = (np.arange(num_label) == y[:,<span class="keyword">None</span>]).astype(np.float32)</div><div class="line"></div><div class="line">graph = tf.Graph()</div><div class="line"><span class="keyword">with</span> graph.as_default():</div><div class="line">    x = tf.constant(X.astype(np.float32))</div><div class="line">    tf_labels = tf.constant(labels)</div><div class="line"></div><div class="line">    <span class="comment"># 隐藏层1</span></div><div class="line">    hidden_layer_weights_1 = tf.Variable(</div><div class="line">    tf.truncated_normal([D, hidden_size_1], stddev=math.sqrt(<span class="number">2.0</span>/num_data)))</div><div class="line">    hidden_layer_bias_1 = tf.Variable(tf.zeros([hidden_size_1]))</div><div class="line"></div><div class="line">    <span class="comment"># 隐藏层2</span></div><div class="line">    hidden_layer_weights_2 = tf.Variable(</div><div class="line">    tf.truncated_normal([hidden_size_1, hidden_size_2], stddev=math.sqrt(<span class="number">2.0</span>/hidden_size_1)))</div><div class="line">    hidden_layer_bias_2 = tf.Variable(tf.zeros([hidden_size_2]))</div><div class="line"></div><div class="line">    <span class="comment"># 输出层</span></div><div class="line">    out_weights = tf.Variable(</div><div class="line">    tf.truncated_normal([hidden_size_2, num_label], stddev=math.sqrt(<span class="number">2.0</span>/hidden_size_2)))</div><div class="line">    out_bias = tf.Variable(tf.zeros([num_label]))</div><div class="line"></div><div class="line">    z1 = tf.matmul(x, hidden_layer_weights_1) + hidden_layer_bias_1</div><div class="line">    h1 = tf.nn.relu(z1)</div><div class="line"></div><div class="line">    z2 = tf.matmul(h1, hidden_layer_weights_2) + hidden_layer_bias_2</div><div class="line">    h2 = tf.nn.relu(z2)</div><div class="line"></div><div class="line">    logits = tf.matmul(h2, out_weights) + out_bias</div><div class="line"></div><div class="line">    <span class="comment"># L2正则化</span></div><div class="line">    regularization = tf.nn.l2_loss(hidden_layer_weights_1) + tf.nn.l2_loss(hidden_layer_weights_2) + tf.nn.l2_loss(out_weights)</div><div class="line">    loss = tf.reduce_mean(</div><div class="line">        tf.nn.softmax_cross_entropy_with_logits(labels=tf_labels, logits=logits) + beta * regularization)</div><div class="line"></div><div class="line">    optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)</div><div class="line"></div><div class="line">    train_prediction = tf.nn.softmax(logits)</div><div class="line"></div><div class="line">    weights = [hidden_layer_weights_1, hidden_layer_bias_1, hidden_layer_weights_2, hidden_layer_bias_2, out_weights, out_bias]</div></pre></td></tr></table></figure></p>
-<p>上一步相当于搭建了神经网络的骨架，现在需要训练。每1000步训练，打印交叉熵损失和正确率。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">num_steps = <span class="number">50000</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">accuracy</span><span class="params">(predictions, labels)</span>:</span></div><div class="line">    <span class="keyword">return</span> (<span class="number">100.0</span> * np.sum(np.argmax(predictions, <span class="number">1</span>) == np.argmax(labels, <span class="number">1</span>))</div><div class="line">          / predictions.shape[<span class="number">0</span>])</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">relu</span><span class="params">(x)</span>:</span></div><div class="line">    <span class="keyword">return</span> np.maximum(<span class="number">0</span>,x)</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">with</span> tf.Session(graph=graph) <span class="keyword">as</span> session:</div><div class="line">    tf.global_variables_initializer().run()</div><div class="line">    print(<span class="string">'Initialized'</span>)</div><div class="line">    <span class="keyword">for</span> step <span class="keyword">in</span> range(num_steps):</div><div class="line">        _, l, predictions = session.run([optimizer, loss, train_prediction])</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (step % <span class="number">1000</span> == <span class="number">0</span>):</div><div class="line">            print(<span class="string">'Loss at step %d: %f'</span> % (step, l))</div><div class="line">            print(<span class="string">'Training accuracy: %.1f%%'</span> % accuracy(</div><div class="line">                predictions, labels))</div><div class="line"></div><div class="line">    w1, b1, w2, b2, w3, b3 = weights</div><div class="line">    <span class="comment"># 显示分类器</span></div><div class="line">    h = <span class="number">0.02</span></div><div class="line">    x_min, x_max = X[:, <span class="number">0</span>].min() - <span class="number">1</span>, X[:, <span class="number">0</span>].max() + <span class="number">1</span></div><div class="line">    y_min, y_max = X[:, <span class="number">1</span>].min() - <span class="number">1</span>, X[:, <span class="number">1</span>].max() + <span class="number">1</span></div><div class="line">    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),</div><div class="line">                         np.arange(y_min, y_max, h))</div><div class="line"></div><div class="line">    Z = np.dot(relu(np.dot(relu(np.dot(np.c_[xx.ravel(), yy.ravel()], w1.eval()) + b1.eval()), w2.eval()) + b2.eval()), w3.eval()) + b3.eval()</div><div class="line">    Z = np.argmax(Z, axis=<span class="number">1</span>)</div><div class="line">    Z = Z.reshape(xx.shape)</div><div class="line">    fig = plt.figure()</div><div class="line">    plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral, alpha=<span class="number">0.8</span>)</div><div class="line">    plt.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y, s=<span class="number">40</span>, cmap=plt.cm.Spectral)</div><div class="line">    plt.xlim(xx.min(), xx.max())</div><div class="line">    plt.ylim(yy.min(), yy.max())</div></pre></td></tr></table></figure></p>
-<pre><code>Initialized
-Loss at step 0: 1.132545
-Training accuracy: 43.7%
-Loss at step 1000: 0.257016
-Training accuracy: 94.0%
-Loss at step 2000: 0.165511
-Training accuracy: 98.0%
-Loss at step 3000: 0.149266
-Training accuracy: 99.0%
-Loss at step 4000: 0.142311
-Training accuracy: 99.3%
-Loss at step 5000: 0.137762
-Training accuracy: 99.3%
-Loss at step 6000: 0.134356
-Training accuracy: 99.3%
-Loss at step 7000: 0.131588
-Training accuracy: 99.3%
-Loss at step 8000: 0.129299
-Training accuracy: 99.3%
-Loss at step 9000: 0.127340
-Training accuracy: 99.3%
-Loss at step 10000: 0.125686
-Training accuracy: 99.3%
-Loss at step 11000: 0.124293
-Training accuracy: 99.3%
-Loss at step 12000: 0.123130
-Training accuracy: 99.3%
-Loss at step 13000: 0.122149
-Training accuracy: 99.3%
-Loss at step 14000: 0.121309
-Training accuracy: 99.3%
-Loss at step 15000: 0.120542
-Training accuracy: 99.3%
-Loss at step 16000: 0.119895
-Training accuracy: 99.3%
-Loss at step 17000: 0.119335
-Training accuracy: 99.3%
-Loss at step 18000: 0.118836
-Training accuracy: 99.3%
-Loss at step 19000: 0.118376
-Training accuracy: 99.3%
-Loss at step 20000: 0.117974
-Training accuracy: 99.3%
-Loss at step 21000: 0.117601
-Training accuracy: 99.3%
-Loss at step 22000: 0.117253
-Training accuracy: 99.3%
-Loss at step 23000: 0.116887
-Training accuracy: 99.3%
-Loss at step 24000: 0.116561
-Training accuracy: 99.3%
-Loss at step 25000: 0.116265
-Training accuracy: 99.3%
-Loss at step 26000: 0.115995
-Training accuracy: 99.3%
-Loss at step 27000: 0.115750
-Training accuracy: 99.3%
-Loss at step 28000: 0.115521
-Training accuracy: 99.3%
-Loss at step 29000: 0.115310
-Training accuracy: 99.3%
-Loss at step 30000: 0.115111
-Training accuracy: 99.3%
-Loss at step 31000: 0.114922
-Training accuracy: 99.3%
-Loss at step 32000: 0.114743
-Training accuracy: 99.3%
-Loss at step 33000: 0.114567
-Training accuracy: 99.3%
-Loss at step 34000: 0.114401
-Training accuracy: 99.3%
-Loss at step 35000: 0.114242
-Training accuracy: 99.3%
-Loss at step 36000: 0.114086
-Training accuracy: 99.3%
-Loss at step 37000: 0.113933
-Training accuracy: 99.3%
-Loss at step 38000: 0.113785
-Training accuracy: 99.3%
-Loss at step 39000: 0.113644
-Training accuracy: 99.3%
-Loss at step 40000: 0.113504
-Training accuracy: 99.3%
-Loss at step 41000: 0.113366
-Training accuracy: 99.3%
-Loss at step 42000: 0.113229
-Training accuracy: 99.3%
-Loss at step 43000: 0.113096
-Training accuracy: 99.3%
-Loss at step 44000: 0.112966
-Training accuracy: 99.3%
-Loss at step 45000: 0.112838
-Training accuracy: 99.3%
-Loss at step 46000: 0.112711
-Training accuracy: 99.3%
-Loss at step 47000: 0.112590
-Training accuracy: 99.3%
-Loss at step 48000: 0.112472
-Training accuracy: 99.3%
-Loss at step 49000: 0.112358
-Training accuracy: 99.3%
-</code></pre><p><img src="http://upload-images.jianshu.io/upload_images/1972331-cf38f01b02145209.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="分类器.png"></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">神经网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/12/Tensorflow/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-word2vec" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/27/word2vec/">Word2vec原理浅析及tensorflow实现</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/27/word2vec/" class="archive-article-date">
-  	<time datetime="2017-06-27T10:45:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Word2vec简介"><a href="#Word2vec简介" class="headerlink" title="Word2vec简介"></a>Word2vec简介</h2><p>Word2Vec是由Google的Mikolov等人提出的一个词向量计算模型。</p>
-<ul>
-<li>输入：大量已分词的文本</li>
-<li>输出：用一个稠密向量来表示每个词</li>
-</ul>
-<p>词向量的重要意义在于将自然语言转换成了计算机能够理解的向量。相对于词袋模型、TF-IDF等模型，词向量能抓住词的上下文、语义，衡量词与词的相似性，在文本分类、情感分析等许多自然语言处理领域有重要作用。</p>
-        
-          <a class="article-more-a" href="/2017/06/27/word2vec/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自然语言处理//" class="article-tag-list-link color2">自然语言处理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/27/word2vec/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-python根据BM25实现文本检索" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/python根据BM25实现文本检索/">python文本相似度计算</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/23/python根据BM25实现文本检索/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:25:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>给定一个或多个搜索词，如“高血压 患者”，从已有的若干篇文本中找出最相关的(n篇)文本。</p>
-<h2 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h2><p>文本检索（text retrieve）的常用策略是：用一个ranking function根据搜索词对所有文本进行排序，选取前n个，就像百度搜索一样。<br>显然，ranking function是决定检索效果最重要的因素，本文选用了在实际应用中效果很好的BM25。BM25其实只用到了一些基础的统计和文本处理的方法，没有很高深的算法。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/python根据BM25实现文本检索/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自然语言处理//" class="article-tag-list-link color2">自然语言处理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/python根据BM25实现文本检索/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-AFNetworking 3.x 使用心得" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/AFNetworking 3.x 使用心得/">AFNetworking 3.x 使用心得</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/23/AFNetworking 3.x 使用心得/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:18:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。<br>在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。</p>
-<p>##AFNetworking进一步封装<br>AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还是不够。AFNetworking是一个通用的库，而在我们自己的项目中，有特定的需求，而且往往在许多类中都需要用到网络请求。对AFNetworking进一步封装，能够大大简化代码，减少重复。<br>举个例子，新建一个CDMNetworkManager类，继承AFHTTPSessionManager。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/AFNetworking 3.x 使用心得/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/iOS开发//" class="article-tag-list-link color1">iOS开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/AFNetworking 3.x 使用心得/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-CoreBluetooth连接蓝牙健康设备" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/">CoreBluetooth连接蓝牙健康设备</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:14:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>##引言<br>CoreBluetooth是iOS下用于蓝牙设备连接的模块，支持蓝牙4.0及以上的设备。蓝牙设备五花八门，本文的主角是蓝牙健康设备，目标是在iPhone上获取蓝牙健康设备测量到的数据（android手机请看<a href="http://www.jianshu.com/p/f4d9bfcd4594">这篇文章</a>）。<br>本文使用的蓝牙健康设备是日本A&amp;D公司生产的蓝牙血压计(UA-651BLE)和体温计（UT-201BLE）。使用这两个型号的健康设备是因为它们是康体佳联盟（continua health alliance）认证的，接口是标准化的，没有进行加密。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/iOS开发//" class="article-tag-list-link color1">iOS开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Android蓝牙健康设备开发：Health Device Profile(HDP)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/">Android蓝牙健康设备开发：Health Device Profile(HDP)</a>
+    <h1 class="article-title" itemprop="name">
+      Android蓝牙健康设备开发：Health Device Profile(HDP)
     </h1>
   
 
@@ -699,9 +166,41 @@ Training accuracy: 99.3%
     <div class="article-entry" itemprop="articleBody">
       
         <p>最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。<br>1、相关概念<br>HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profile，由蓝牙技术联盟（Bluetooth SIG）发布。并不是所有蓝牙设备都可以采用HDP，只有经典蓝牙（BR/EDR）设备才可以。低功耗蓝牙设备，即蓝牙4.0及以上，采用的是GATT等profile。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/#more">more >></a>
-        
+<a id="more"></a>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-d1818590b10765c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>上图是HDP的协议栈。在通信时，蓝牙健康设备作为source，Android手机作为sink。图中L2CAP、SDP、MCAP是蓝牙通信的底层协议，中间是IEEE11073协议。11073是IEEE发布的一个健康设备的协议簇，其下包含了许多不同种类的健康设备协议，如11073-10407是血压计的协议。在数据传输时，手机与健康设备根据此协议来发送请求、解析数据等。最上层的application在本文中自然指的就是Android app。<br>Android蓝牙模块：android.bluetooth是蓝牙的开发包，里面包含了所有蓝牙相关的类，无论是经典蓝牙还是低功耗蓝牙。其中，本文重点关注的是BluetoothHealth这个类，还用到了一些蓝牙基础类BluetoothAdapter BluetoothDevice等，在这里就不展开介绍了。BluetoothHealth是在API14时引入的，所以系统版本高于14的Android手机都可以与采用HDP的健康设备通信。BluetoothHealth中包括了与HDP设备建立通信的API，具体请参见<a href="https://developer.android.com/reference/android/bluetooth/BluetoothHealth.html" target="_blank" rel="external">官方文档</a>。在官方文档中有一个建立通信的流程：<br>1、调用<a href="https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.html#getProfileProxy(android.content.Context, android.bluetooth.BluetoothProfile.ServiceListener, int" target="_blank" rel="external">getProfileProxy(Context, BluetoothProfile.ServiceListener, int)</a>)来获取代理对象的连接。<br>2、创建BluetoothHealthCallback回调，调用<a href="https://developer.android.com/reference/android/bluetooth/BluetoothHealth.html#registerSinkAppConfiguration(java.lang.String, int, android.bluetooth.BluetoothHealthCallback" target="_blank" rel="external">registerSinkAppConfiguration(String, int, BluetoothHealthCallback)</a>)注册一个sink端的应用程序配置。<br>3、将手机与健康设备配对，这一步一般在手机的“设置”中完成。<br>4、使用<a href="https://developer.android.com/reference/android/bluetooth/BluetoothHealth.html#connectChannelToSource(android.bluetooth.BluetoothDevice, android.bluetooth.BluetoothHealthAppConfiguration" target="_blank" rel="external">connectChannelToSource(BluetoothDevice, BluetoothHealthAppConfiguration)</a>)来建立一个与健康设备的通信channel。有的设备会自动建立通信，不需要在代码中调用这个方法。第二步中的回调会指示channel的状态变化。<br>5、用ParcelFileDescriptor来读取健康设备传来的数据，并根据IEEE 11073来解析数据。<br>6、通信结束后，关闭通信channel，注销应用程序配置。<br>看完这个流程是不是一脸懵逼？不要慌，这里官方文档实在太抽象了，必须要配合实际的代码才能看懂。<br>2、demo代码<br>项目的目标是与经典蓝牙血压计进行通信，获取血压计测量的数值和日期。这里血压计的型号是A&amp;D UA-767PBT-C。项目中的代码是以github上<a href="https://github.com/andengineering/A-D-HDP-Android-Demo" target="_blank" rel="external">这个项目</a>为基础，根据需求进行修改而实现的。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-4b89d2b3d45c3799.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="">项目结构</p>
+<p>上图是项目的结构，非常简单，只有一个activity和一个service。activity与用户交互，service绑定在activity中与蓝牙血压计建立通信、交换数据。<br>首先AndroidManifest.xml中注册蓝牙权限：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH&quot; /&gt;</div><div class="line">&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_ADMIN&quot;/&gt;</div></pre></td></tr></table></figure></p>
+<p>##MainActivity<br>主要作用是显示血压计传过来的数据，以及绑定服务。<br>activity的布局如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-4e3639c3eb79df27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="demo.png"></p>
+<p>上半部分是一个ArrayList,用于显示手机所配对的蓝牙设备的名称和Mac地址。下半部分会显示一次血压测量的参数：收缩压、舒张压、心率、测量时间。</p>
+<p>在MainActivity中一些重要私有变量：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private static final int REQUEST_ENABLE_BT = 1;  //用于打开手机蓝牙</div><div class="line">private static final int HEALTH_PROFILE_SOURCE_DATA_TYPE = 0x1007;  //IEEE 11073中规定的血压数据类型</div><div class="line">private BluetoothAdapter mBluetoothAdapter;</div><div class="line">private Messenger mHealthService;  //用于与service通信</div><div class="line">private boolean mHealthServiceBound; //用于判断service是否与此activity绑定</div></pre></td></tr></table></figure></p>
+<p>打开蓝牙：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">if (!mBluetoothAdapter.isEnabled()) &#123;</div><div class="line">     Intent enableIntent = new Intent(</div><div class="line">             BluetoothAdapter.ACTION_REQUEST_ENABLE);</div><div class="line">     startActivityForResult(enableIntent, REQUEST_ENABLE_BT);</div><div class="line"> &#125; else &#123;</div><div class="line">     initialize();</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>启动服务:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">// Sets up communication with HDPService.</div><div class="line">private ServiceConnection mConnection = new ServiceConnection() &#123;</div><div class="line">    public void onServiceConnected(ComponentName name, IBinder service) &#123;</div><div class="line">        mHealthServiceBound = true;</div><div class="line">        Message msg = Message.obtain(null,</div><div class="line">                HDPService.MSG_REG_CLIENT);</div><div class="line">        msg.replyTo = mMessenger;</div><div class="line">        mHealthService = new Messenger(service);</div><div class="line">        try &#123;</div><div class="line">            mHealthService.send(msg);</div><div class="line">            //register blood pressure data type</div><div class="line">            sendMessage(HDPService.MSG_REG_HEALTH_APP,</div><div class="line">                    HEALTH_PROFILE_SOURCE_DATA_TYPE);</div><div class="line">        &#125; catch (RemoteException e) &#123;</div><div class="line">            Log.w(TAG, &quot;Unable to register client to service.&quot;);</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void onServiceDisconnected(ComponentName name) &#123;</div><div class="line">        mHealthService = null;</div><div class="line">        mHealthServiceBound = false;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">private void initialize() &#123;</div><div class="line">    // Starts health service.</div><div class="line">    Intent intent = new Intent(this, HDPService.class);</div><div class="line">    //startService(intent);</div><div class="line">    bindService(intent, mConnection, Context.BIND_AUTO_CREATE);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>用handler和message来实现activity与service的通信：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">private Handler mIncomingHandler = new Handler() &#123;</div><div class="line">    @Override</div><div class="line">    public void handleMessage(Message msg) &#123;</div><div class="line">        switch (msg.what) &#123;</div><div class="line">          ......</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">private final Messenger mMessenger = new Messenger(mIncomingHandler);</div></pre></td></tr></table></figure></p>
+<p>##HDPService<br>这个service是核心部分，手机与蓝牙血压计的通信就是在此实现的。<br>service中部分重要私有变量:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private BluetoothHealthAppConfiguration mHealthAppConfig; //BluetoothHealthAppConfiguration</div><div class="line">private BluetoothAdapter mBluetoothAdapter;  //BluetoothAdapter</div><div class="line">private BluetoothHealth mBluetoothHealth;  //代理对象</div></pre></td></tr></table></figure></p>
+<p>在service中按照官方文档的流程一步一步实现与蓝牙血压计的通信。<br>1、获取代理对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public void onCreate() &#123;</div><div class="line">    super.onCreate();</div><div class="line">    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();</div><div class="line">    if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) &#123;</div><div class="line">        // Bluetooth adapter isn&apos;t available.  The client of the service is supposed to</div><div class="line">        // verify that it is available and activate before invoking this service.</div><div class="line">        stopSelf();</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    if (!mBluetoothAdapter.getProfileProxy(this, mBluetoothServiceListener,</div><div class="line">            BluetoothProfile.HEALTH)) &#123;</div><div class="line">        Toast.makeText(this, &quot;HDP not available&quot;,</div><div class="line">                Toast.LENGTH_LONG).show();</div><div class="line">        stopSelf();</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>代码中的mBluetoothServiceListener是一个回调，如果getProfileProxy方法返回为真，就进入回调。在回调中获取了代理对象属于BluetoothHealth类的proxy。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">private final BluetoothProfile.ServiceListener mBluetoothServiceListener =</div><div class="line">            new BluetoothProfile.ServiceListener() &#123;</div><div class="line">                public void onServiceConnected(int profile, BluetoothProfile proxy) &#123;</div><div class="line">                    if (profile == BluetoothProfile.HEALTH) &#123;</div><div class="line">                        mBluetoothHealth = (BluetoothHealth) proxy;</div><div class="line">                        Log.d(TAG, &quot;onServiceConnected to profile: &quot; + profile);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                public void onServiceDisconnected(int profile) &#123;</div><div class="line">                    if (profile == BluetoothProfile.HEALTH) &#123;</div><div class="line">                        mBluetoothHealth = null;</div><div class="line">                    &#125;</div><div class="line">                    Log.d(TAG, &quot;onServiceDisconnected&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125;;</div></pre></td></tr></table></figure></p>
+<p>2、注册BluetoothHealthAppConfiguration:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mBluetoothHealth.registerSinkAppConfiguration(TAG, dataType, mHealthCallback);</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line">private final BluetoothHealthCallback mHealthCallback = new BluetoothHealthCallback() &#123;</div><div class="line">        // Callback to handle application registration and unregistration events.  The service</div><div class="line">        // passes the status back to the UI client.</div><div class="line">        public void onHealthAppConfigurationStatusChange(BluetoothHealthAppConfiguration config,</div><div class="line">                                                         int status) &#123;</div><div class="line">            if (status == BluetoothHealth.APP_CONFIG_REGISTRATION_FAILURE) &#123;</div><div class="line">                mHealthAppConfig = null;</div><div class="line">                sendMessage(STATUS_HEALTH_APP_REG, RESULT_FAIL, null);</div><div class="line">                Log.d(TAG, &quot;APP_CONFIG_REGISTRATION_FAILURE&quot;);</div><div class="line">            &#125; else if (status == BluetoothHealth.APP_CONFIG_REGISTRATION_SUCCESS) &#123;</div><div class="line">                mHealthAppConfig = config;</div><div class="line">                sendMessage(STATUS_HEALTH_APP_REG, RESULT_OK, null);</div><div class="line">                Log.d(TAG, &quot;APP_CONFIG_REGISTRATION_SUCCESS&quot;);</div><div class="line">            &#125; else if (status == BluetoothHealth.APP_CONFIG_UNREGISTRATION_FAILURE ||</div><div class="line">                    status == BluetoothHealth.APP_CONFIG_UNREGISTRATION_SUCCESS) &#123;</div><div class="line">                sendMessage(STATUS_HEALTH_APP_UNREG,</div><div class="line">                        status == BluetoothHealth.APP_CONFIG_UNREGISTRATION_SUCCESS ?</div><div class="line">                                RESULT_OK : RESULT_FAIL, null);</div><div class="line">                Log.d(TAG, &quot;UNREGISTRATION&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // Callback to handle channel connection state changes.</div><div class="line">        // Note that the logic of the state machine may need to be modified based on the HDP device.</div><div class="line">        // When the HDP device is connected, the received file descriptor is passed to the</div><div class="line">        // ReadThread to read the content.</div><div class="line">        public void onHealthChannelStateChange(BluetoothHealthAppConfiguration config,</div><div class="line">                                               BluetoothDevice device, int prevState, int newState, ParcelFileDescriptor fd,</div><div class="line">                                               int channelId) &#123;</div><div class="line">//            if (Log.isLoggable(TAG, Log.DEBUG))</div><div class="line">            Log.d(TAG, String.format(&quot;prevState\t%d ----------&gt; newState\t%d&quot;,</div><div class="line">                    prevState, newState));</div><div class="line">            if (prevState == BluetoothHealth.STATE_CHANNEL_CONNECTING &amp;&amp;</div><div class="line">                    newState == BluetoothHealth.STATE_CHANNEL_CONNECTED) &#123;</div><div class="line">                if (config.equals(mHealthAppConfig)) &#123;</div><div class="line">                    mChannelId = channelId;</div><div class="line">                    sendMessage(STATUS_CREATE_CHANNEL, RESULT_OK, null);</div><div class="line">                    (new ReadThread(fd)).start();</div><div class="line">                &#125; else &#123;</div><div class="line">                    sendMessage(STATUS_CREATE_CHANNEL, RESULT_FAIL, null);</div><div class="line">                &#125;</div><div class="line">            &#125; else if (prevState == BluetoothHealth.STATE_CHANNEL_CONNECTING &amp;&amp;</div><div class="line">                    newState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED) &#123;</div><div class="line">                sendMessage(STATUS_CREATE_CHANNEL, RESULT_FAIL, null);</div><div class="line">            &#125; else if (newState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED) &#123;</div><div class="line">                Log.d(TAG, &quot;I&apos;m in State Channel Disconnected.&quot;);</div><div class="line">                if (config.equals(mHealthAppConfig)) &#123;</div><div class="line">                    sendMessage(STATUS_DESTROY_CHANNEL, RESULT_OK, null);</div><div class="line"></div><div class="line">                &#125; else &#123;</div><div class="line">                    sendMessage(STATUS_DESTROY_CHANNEL, RESULT_FAIL, null);</div><div class="line">                &#125;</div><div class="line">            &#125; else if (prevState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED &amp;&amp;</div><div class="line">                    newState == BluetoothHealth.STATE_CHANNEL_CONNECTED) &#123;</div><div class="line">                if (config.equals(mHealthAppConfig)) &#123;</div><div class="line">                    mChannelId = channelId;</div><div class="line">                    sendMessage(STATUS_CREATE_CHANNEL, RESULT_OK, null);</div><div class="line">                    (new ReadThread(fd)).start();</div><div class="line">                &#125; else &#123;</div><div class="line">                    sendMessage(STATUS_CREATE_CHANNEL, RESULT_FAIL, null);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<p>mHealthCallback是其中的关键，有两个方法onHealthAppConfigurationStatusChange和onHealthChannelStateChange。<br>onHealthAppConfigurationStatusChange回调会监听AppConfiguration的状态，会在registerSinkAppConfiguration函数返回后调用。<br>onHealthChannelStateChange回调会监听与source端（在这里也就是血压计）通信通道的状态变化，如果收到发来的数据，会接收到一个ParcelFileDescriptor用于读取。</p>
+<p>3、将手机与健康设备配对<br>这一步在手机的系统设置中进行，不必严格按照这个流程的顺序，可以事先配对好。</p>
+<p>4、建立通信通道<br>这一步不是所有设备都需要，部分设备会自动建立通道与sink端（手机）进行通信。我们所用的这个蓝牙血压计就是如此，会自动建立通道。<br>如果不能自动建立通信，可以主动调用如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mBluetoothHealth.connectChannelToSource(mDevice, mHealthAppConfig);</div></pre></td></tr></table></figure></p>
+<p>mDevice是将要建立通信的source端，可以用mBluetoothAdapter获取与手机配对的任一设备。</p>
+<p>5、读取、解析数据<br>在与蓝牙设备通信时，我们需要知道一点：通信是双向的，设备会向手机发信息，手机可以也需要向设备发信息。在service中建了两个线程，一个用于读数据，一个用于写数据，通过这两个线程实现与设备的数据交换。</p>
+<p>首先看读线程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">private class ReadThread extends Thread &#123;</div><div class="line">    private ParcelFileDescriptor mFd;</div><div class="line"></div><div class="line">    public ReadThread(ParcelFileDescriptor fd) &#123;</div><div class="line">        super();</div><div class="line">        mFd = fd;</div><div class="line">        Log.i(TAG, &quot;read thread&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">      ...</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>读线程的调用是在回调方法onHealthChannelStateChange中的，当判断通信通道打开时，会开启一个读线程，并且将回调中提供的ParcelFileDescriptor传入读线程的构造方法，用于读取数据。<br>具体的读取和解析过程我们来看run方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line">FileInputStream fis = new FileInputStream(mFd.getFileDescriptor());</div><div class="line">            byte data[] = new byte[300]; //假定有300byte的数据</div><div class="line">            try &#123;</div><div class="line">                while (fis.read(data) &gt; -1) &#123;</div><div class="line">                    if (data[0] != (byte) 0x00) &#123;</div><div class="line">                        String test = byte2hex(data);</div><div class="line">                        Log.i(TAG, &quot;test: &quot; + test);</div><div class="line">                        if (data[0] == (byte) 0xE2) &#123;</div><div class="line">                            Log.i(TAG, &quot;E2&quot;);</div><div class="line">                            //data_AR</div><div class="line">                            count = 1;</div><div class="line">                            (new WriteThread(mFd)).start();</div><div class="line">                            try &#123;</div><div class="line">                                sleep(100);</div><div class="line">                            &#125; catch (InterruptedException e) &#123;</div><div class="line">                                e.printStackTrace();</div><div class="line">                            &#125;</div><div class="line">                            count = 2;</div><div class="line">                            (new WriteThread(mFd)).start();</div><div class="line">                        &#125; else if (data[0] == (byte) 0xE7) &#123;</div><div class="line">                            Log.i(TAG, &quot;E7&quot;);</div><div class="line">                            if (data[18] == (byte) 0x0d &amp;&amp; data[19] == (byte) 0x1d)  //fixed report</div><div class="line">                            &#123;</div><div class="line">                                count = 3;</div><div class="line">                                //set invoke id so get correct response</div><div class="line">                                invoke = new byte[]&#123;data[6], data[7]&#125;;</div><div class="line">                                //write back response</div><div class="line">                                (new WriteThread(mFd)).start();</div><div class="line">                                //parse data!!</div><div class="line"></div><div class="line">                                int length = data[21];</div><div class="line">                                Log.i(TAG, &quot;length is &quot; + length);</div><div class="line">                                int number_of_data_packets = data[22 + 5]; //03</div><div class="line">                                //packet_start starts from handle 0 byte</div><div class="line">                                int packet_start = 30;</div><div class="line">                                final int SYS_DIA_MAP_DATA = 1;</div><div class="line">                                final int PULSE_DATA = 2;</div><div class="line">                                final int ERROR_CODE_DATA = 3;</div><div class="line">                                for (int i = 0; i &lt; number_of_data_packets; i++) &#123;</div><div class="line">                                    int obj_handle = data[packet_start + 1];</div><div class="line">                                    switch (obj_handle) &#123;</div><div class="line">                                        case SYS_DIA_MAP_DATA:</div><div class="line">                                            int sys = byteToUnsignedInt(data[packet_start + 9]);</div><div class="line">                                            int dia = byteToUnsignedInt(data[packet_start + 11]);</div><div class="line">                                            int map = byteToUnsignedInt(data[packet_start + 13]);</div><div class="line">                                            //create team string... 9+13~9+20</div><div class="line">                                            Log.i(TAG, &quot;sys is &quot; + sys);</div><div class="line">                                            sendMessage(RECEIVED_SYS, sys, null);</div><div class="line">                                            Log.i(TAG, &quot;dia is &quot; + dia);</div><div class="line">                                            sendMessage(RECEIVED_DIA, dia, null);</div><div class="line">                                            Log.i(TAG, &quot;map is &quot; + map);</div><div class="line">                                            break;</div><div class="line">                                        case PULSE_DATA:</div><div class="line">                                            //parse</div><div class="line">                                            int pulse = byteToUnsignedInt(data[packet_start + 5]);</div><div class="line">                                            Log.i(TAG, &quot;pulse is &quot; + pulse);</div><div class="line">                                            sendMessage(RECEIVED_PUL, pulse, null);</div><div class="line">                                            String month = byteToString(data[packet_start + 8]);</div><div class="line">                                            String day = byteToString(data[packet_start + 9]);</div><div class="line">                                            String year = byteToString(data[packet_start + 6]) + byteToString(data[packet_start + 7]);</div><div class="line">                                            String hour = byteToString(data[packet_start + 10]);</div><div class="line">                                            String minute = byteToString(data[packet_start + 11]);</div><div class="line">                                            String date = year + &quot;.&quot; + month + &quot;.&quot; + day + &quot; &quot; + hour + &quot;:&quot; + minute;</div><div class="line">                                            Log.v(TAG, &quot;the date is &quot; + date);</div><div class="line">                                            sendMessage(RECEIVED_DATE, 0, date);</div><div class="line">                                            break;</div><div class="line">                                        case ERROR_CODE_DATA:</div><div class="line">                                            //need more signal</div><div class="line">                                            break;</div><div class="line">                                    &#125;</div><div class="line">                                    packet_start += 4 + data[packet_start + 3];    //4 = ignore beginning four bytes</div><div class="line">                                &#125;</div><div class="line">                            &#125; else &#123;</div><div class="line">                                count = 2;</div><div class="line">                            &#125;</div><div class="line">                        &#125; else if (data[0] == (byte) 0xE4) &#123;</div><div class="line">                            count = 4;</div><div class="line">                            (new WriteThread(mFd)).start();</div><div class="line">                        &#125;</div><div class="line">                        //zero out the data</div><div class="line">                        for (int i = 0; i &lt; data.length; i++) &#123;</div><div class="line">                            data[i] = (byte) 0x00;</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                    sendMessage(STATUS_READ_DATA, 0, null);</div><div class="line">                &#125;</div><div class="line">            &#125; catch (IOException ioe) &#123;</div><div class="line">            &#125;</div><div class="line">            if (mFd != null) &#123;</div><div class="line">                try &#123;</div><div class="line">                    mFd.close();</div><div class="line">                &#125; catch (IOException e) &#123; /* Do nothing. */ &#125;</div><div class="line">            &#125;</div><div class="line">            sendMessage(STATUS_READ_DATA_DONE, 0, null);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>while循环中是对读取数据的解析，这里的解析必须参考IEEE 11073中的内容。这个demo用到了血压计，因此就要使用IEEE 11073－10407（专门针对血压计的协议）。使用其他类型的设备也就要使用相应的IEEE 11073－xxxxx协议。<br>回到demo中的数据读取和解析，这是一个根据IEEE 11073－10407进行手机与蓝牙设备互相发送数据的过程，下图是运行的log：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-3d16b1f565818953.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="log.png"></p>
+<p>大致解释一下流程：<br>按下测量按钮后，蓝牙血压计发来一个e2开头的数据，这是一个请求连接的信号。<br>收到请求连接后，手机用写线程发送给血压计一个回复同意连接，接着再发送一个数据请求血压计的特征。<br>血压计发来一个e7开头的数据，回复血压计的特征。<br>测量完毕后，血压计发来一个e7开头的数据，是这次测量的报告。<br>手机回复确认收到测量数据。<br>血压计发来一个e4开头的数据，请求断开连接。<br>手机回复确认断开连接。</p>
+<p>想要查看详细数据请看IEEE 11073－10407！请看IEEE 11073－10407！请看IEEE 11073－10407！</p>
+<p>接下去是写线程：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line">private class WriteThread extends Thread &#123;</div><div class="line">        private ParcelFileDescriptor mFd;</div><div class="line"></div><div class="line">        public WriteThread(ParcelFileDescriptor fd) &#123;</div><div class="line">            super();</div><div class="line">            mFd = fd;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void run() &#123;</div><div class="line">            FileOutputStream fos = new FileOutputStream(mFd.getFileDescriptor());</div><div class="line">//        	Association Response [0xE300]</div><div class="line">            final byte data_AR[] = new byte[]&#123;(byte) 0xE3, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x2C,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x50, (byte) 0x79,</div><div class="line">                    (byte) 0x00, (byte) 0x26,</div><div class="line">                    (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x80, (byte) 0x00,</div><div class="line">                    (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x08,  //bt add for phone, can be automate in the future</div><div class="line">                    (byte) 0x3C, (byte) 0x5A, (byte) 0x37, (byte) 0xFF,</div><div class="line">                    (byte) 0xFE, (byte) 0x95, (byte) 0xEE, (byte) 0xE3,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00&#125;;</div><div class="line">//          Presentation APDU [0xE700]</div><div class="line">            final byte data_DR[] = new byte[]&#123;(byte) 0xE7, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x12,</div><div class="line">                    (byte) 0x00, (byte) 0x10,</div><div class="line">                    (byte) invoke[0], (byte) invoke[1],</div><div class="line">                    (byte) 0x02, (byte) 0x01,</div><div class="line">                    (byte) 0x00, (byte) 0x0A,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x0D, (byte) 0x1D,</div><div class="line">                    (byte) 0x00, (byte) 0x00&#125;;</div><div class="line"></div><div class="line">            final byte get_MDS[] = new byte[]&#123;(byte) 0xE7, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x0E,</div><div class="line">                    (byte) 0x00, (byte) 0x0C,</div><div class="line">                    (byte) 0x00, (byte) 0x24,</div><div class="line">                    (byte) 0x01, (byte) 0x03,</div><div class="line">                    (byte) 0x00, (byte) 0x06,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x00&#125;;</div><div class="line"></div><div class="line">            final byte data_RR[] = new byte[]&#123;(byte) 0xE5, (byte) 0x00,</div><div class="line">                    (byte) 0x00, (byte) 0x02,</div><div class="line">                    (byte) 0x00, (byte) 0x00&#125;;</div><div class="line"></div><div class="line">            try &#123;</div><div class="line">                Log.i(TAG, String.valueOf(count));</div><div class="line">                if (count == 1) &#123;</div><div class="line">                    fos.write(data_AR);</div><div class="line">                    Log.i(TAG, &quot;Association Responsed!&quot;);</div><div class="line">                &#125; else if (count == 2) &#123;</div><div class="line">                    fos.write(get_MDS);</div><div class="line">                    Log.i(TAG, &quot;Get MDS object attributes!&quot;);</div><div class="line">//            		fos.write(data_ABORT);</div><div class="line">                &#125; else if (count == 3) &#123;</div><div class="line">                    fos.write(data_DR);</div><div class="line">                    Log.i(TAG, &quot;Data Responsed!&quot;);</div><div class="line">                &#125; else if (count == 4) &#123;</div><div class="line">                    fos.write(data_RR);</div><div class="line">                    Log.i(TAG, &quot;Data Released!&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125; catch (IOException ioe) &#123;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>写线程的逻辑非常清晰，就是通过同一个ParcelFileDescriptor向血压计发送数据。发送的数据在这里已经写死，一共四组数据：作用依次是确认连接请求；确认收到测量数据；请求血压计的特征；确认断开连接。</p>
+<p>大功告成，收到数据后界面如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-dc9a150422a28ca0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Screenshot_2016-09-18-09-53-32.png"></p>
+<p>第一次写文章，有各种不足之处，请大家指正。</p>
+
       
 
       
@@ -734,16 +233,84 @@ Training accuracy: 99.3%
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          CoreBluetooth连接蓝牙健康设备
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/04/28/python文本相似度计算/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">python文本相似度计算</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -763,545 +330,14 @@ Training accuracy: 99.3%
 
 
 
-
   
-    <article id="post-python文本相似度计算" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/28/python文本相似度计算/">python文本相似度计算</a>
-    </h1>
   
 
-        
-        <a href="/2017/04/28/python文本相似度计算/" class="archive-article-date">
-  	<time datetime="2017-04-28T14:38:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ol>
-<li>分词、去停用词</li>
-<li>词袋模型向量化文本</li>
-<li>TF-IDF模型向量化文本</li>
-<li>LSI模型向量化文本</li>
-<li>计算相似度</li>
-</ol>
-        
-          <a class="article-more-a" href="/2017/04/28/python文本相似度计算/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自然语言处理//" class="article-tag-list-link color2">自然语言处理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/28/python文本相似度计算/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-wordnet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/28/wordnet/">WordNet</a>
-    </h1>
   
 
-        
-        <a href="/2017/03/28/wordnet/" class="archive-article-date">
-  	<time datetime="2017-03-28T07:58:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近在coursera上学习Princeton大学的Algorithm PartII，这个系列的两门课是我见过最好的算法课。主讲Robert Sedgewick师承高德纳，声名远播，虽然年纪大了，但是讲课思路清晰，深入浅出。与Kevin Wayne共同编著的《算法》第四版作为教材，没有《算法导论》那么偏理论、晦涩难懂，能够把常见的数据结构和算法讲得很透彻，容易理解。<br>更值得称道的是这门课编程作业及其评分系统。上课的内容是基础的数据结构和算法，但编程作业往往是这些算法的实际应用，能真正理解为什么在给定的情况下要使用这样的数据结构、算法。作业的评分不仅仅是看正确与否，还有运行时间、内存的要求，会给出详细的分析报告，如果不是ACM大神，这些作业都值得花时间去仔细琢磨。<br>下面进入正题，第一周的作业WordNet</p>
-<p>##题目<br>WordNet is a semantic lexicon for theEnglish language that is used extensively by computational linguistsand cognitive scientists; for example, it was a key component in IBM’sWatson.WordNet groups words into sets of synonyms called synsets and describes semantic relationships between them.One such relationship is the is-a relationship, which connects a hyponym(more specific synset) to a hypernym (more general synset).For example, locomotion is a hypernym of runningand running is a hypernym of dash.</p>
-<p>The WordNet digraph.Your first task is to build the wordnet digraph: each vertex v is an integer that represents a synset, and each directed edge v→w represents that w is a hypernym of v.The wordnet digraph is a rooted DAG: it is acylic and has one vertex thatis an ancestor of every other vertex.However, it is not necessarily a tree because a synset can have more than onehypernym. A small subgraph of the wordnet digraph is illustrated below.</p>
-<p>The WordNet input file formats.We now describe the two data files that you will use to create the wordnet digraph.The files are in CSV format: each line contains a sequence of fields,separated by commas.</p>
-<p>List of noun synsets.The file synsets.txtlists all the (noun) synsets in WordNet.The first field is the synset id (an integer),the second field is the synonym set (or synset), and thethird field is its dictionary definition (or gloss).For example, the line<br>36,AND_circuit AND_gate,a circuit in a computer that fires only when all of its inputs fire<br>means that the synset { AND_circuit, AND_gate }has an id number of 36 and it’s gloss isa circuit in a computer that fires only when all of its inputs fire.The individual nouns that comprise a synset are separatedby spaces (and a synset element is not permitted to contain a space).The S synset ids are numbered 0 through S − 1;the id numbers will appear consecutively in the synset file.<br>List of hypernyms.The file hypernyms.txtcontains the hypernym relationships:The first field is a synset id; subsequent fields are the id numbersof the synset’s hypernyms. For example, the following line<br>164,21012,56099<br>means that the the synset 164 (“Actifed”) has two hypernyms:21012 (“antihistamine”) and56099 (“nasal_decongestant”),representing that Actifed is both an antihistamine and a nasal decongestant.The synsets are obtained from the corresponding lines in the file synsets.txt.</p>
-<p>164,Actifed,trade name for a drug containing an antihistamine and a decongestant…<br>21012,antihistamine,a medicine used to treat allergies…<br>56099,nasal_decongestant,a decongestant that provides temporary relief of nasal…<br>WordNet data type.Implement an immutable data type WordNet with the following API:</p>
-<p>// constructor takes the name of the two input files<br>public WordNet(String synsets, String hypernyms)</p>
-<p>// the set of nouns (no duplicates), returned as an Iterable<br>public Iterable<string> nouns()</string></p>
-<p>// is the word a WordNet noun?<br>public boolean isNoun(String word)</p>
-<p>// distance between nounA and nounB (defined below)<br>public int distance(String nounA, String nounB)</p>
-<p>// a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB<br>// in a shortest ancestral path (defined below)<br>public String sap(String nounA, String nounB)</p>
-<p>// for unit testing of this class<br>public static void main(String[] args)<br>The constructor should throw a java.lang.IllegalArgumentExceptionif the input does not correspond to a rooted DAG.The distance() and sap() methodsshould throw a java.lang.IllegalArgumentExceptionunless both of the noun arguments are WordNet nouns.<br>Your data type should use space linear in the input size(size of synsets and hypernyms files).The constructor should take time linearithmic (or better) in the input size.The method isNoun() should run in time logarithmic (or better) inthe number of nouns.The methods distance() and sap() should run in time linear in thesize of the WordNet digraph.</p>
-<p>Shortest ancestral path.An ancestral path between two verticesv and w in a digraph is a directed path fromv to a common ancestor x, together witha directed path from w to the same ancestor x. A shortest ancestral path is an ancestral path of minimum total length.For example, in the digraph at left(digraph1.txt),the shortest ancestral path between3 and 11 has length 4 (with common ancestor 1).In the digraph at right (digraph2.txt),one ancestral path between 1 and 5 has length 4(with common ancestor 5), but the shortest ancestral path has length 2(with common ancestor 0).</p>
-<p>SAP data type.Implement an immutable data type SAP with the following API:</p>
-<p>// constructor takes a digraph (not necessarily a DAG)<br>public SAP(Digraph G)</p>
-<p>// length of shortest ancestral path between v and w; -1 if no such path<br>public int length(int v, int w)</p>
-<p>// a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path<br>public int ancestor(int v, int w)</p>
-<p>// length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path<br>public int length(Iterable<integer> v, Iterable<integer> w)</integer></integer></p>
-<p>// a common ancestor that participates in shortest ancestral path; -1 if no such path<br>public int ancestor(Iterable<integer> v, Iterable<integer> w)</integer></integer></p>
-<p>// for unit testing of this class (such as the one below)<br>public static void main(String[] args)<br>All methods should throw a java.lang.IndexOutOfBoundsException if one (or more) of the input arguments is not between 0 and G.V() - 1.You may assume that the iterable arguments contain at least one integer.All methods (and the constructor) should take time at mostproportional to E + Vin the worst case, where E and V are the number of edges and verticesin the digraph, respectively.Your data type should use space proportional to E + V.<br>Test client.The following test client takes the name of a digraph input file asas a command-line argument, constructs the digraph,reads in vertex pairs from standard input,and prints out the length of the shortest ancestral path between the two verticesand a common ancestor that participates in that path:</p>
-<p>public static void main(String[] args) {<br>    In in = new In(args[0]);<br>    Digraph G = new Digraph(in);<br>    SAP sap = new SAP(G);<br>    while (!StdIn.isEmpty()) {<br>        int v = StdIn.readInt();<br>        int w = StdIn.readInt();<br>        int length   = sap.length(v, w);<br>        int ancestor = sap.ancestor(v, w);<br>        StdOut.printf(“length = %d, ancestor = %d\n”, length, ancestor);<br>    }<br>}<br>Here is a sample execution:<br>% more digraph1.txt             % java SAP digraph1.txt<br>13                              3 11<br>11                              length = 4, ancestor = 1<br> 7  3<br> 8  3                           9 12<br> 3  1                           length = 3, ancestor = 5<br> 4  1<br> 5  1                           7 2<br> 9  5                           length = 4, ancestor = 0<br>10  5<br>11 10                           1 6<br>12 10                           length = -1, ancestor = -1<br> 1  0<br> 2  0<br>Measuring the semantic relatedness of two nouns.Semantic relatedness refers to the degree to which two concepts are related. Measuring semantic relatedness is a challenging problem. For example, most of us agree that George Bush and John Kennedy (two U.S. presidents)are more related than are George Bushand chimpanzee (two primates). However, not most of us agree that George Bush and Eric Arthur Blair are related concepts. But if one is aware that George Bush and Eric Arthur Blair (aka George Orwell) are both communicators, then it becomes clear that the two concepts might be related.</p>
-<p>We define the semantic relatednessof two wordnet nouns A and B as follows:</p>
-<p>distance(A, B) = distance is the minimum length of any ancestral path betweenany synset v of A and any synset w of B.<br>This is the notion of distance that you will use to implement thedistance() and sap() methods in the WordNet data type.</p>
-<p>Outcast detection.Given a list of wordnet nouns A1, A2,…, An, which nounis the least related to the others? To identify an outcast,compute the sum of the distances between each noun and every other one:</p>
-<p>di   =  dist(Ai, A1)   +  dist(Ai, A2)   +   …   +   dist(Ai, An)<br>and return a noun Atfor which dt is maximum.<br>Implement an immutable data type Outcast with the following API:</p>
-<p>// constructor takes a WordNet object<br>public Outcast(WordNet wordnet)</p>
-<p>// given an array of WordNet nouns, return an outcast<br>public String outcast(String[] nouns)</p>
-<p>// for unit testing of this class (such as the one below)<br>public static void main(String[] args)<br>Assume that argument array to the outcast() methodcontains only valid wordnet nouns (and that it contains at least two such nouns).<br>The following test client takes from the command line the name of a synset file, the name of a hypernym file, followed by thenames of outcast files, and prints out an outcast in each file:</p>
-<p>public static void main(String[] args) {<br>    WordNet wordnet = new WordNet(args[0], args[1]);<br>    Outcast outcast = new Outcast(wordnet);<br>    for (int t = 2; t &lt; args.length; t++) {<br>        In in = new In(args[t]);<br>        String[] nouns = in.readAllStrings();<br>        StdOut.println(args[t] + “: “ + outcast.outcast(nouns));<br>    }<br>}<br>Here is a sample execution:<br>% more outcast5.txt<br>horse zebra cat bear table</p>
-<p>% more outcast8.txt<br>water soda bed orange_juice milk apple_juice tea coffee</p>
-<p>% more outcast11.txt<br>apple pear peach banana lime lemon blueberry strawberry mango watermelon potato</p>
-<p>% java Outcast synsets.txt hypernyms.txt outcast5.txt outcast8.txt outcast11.txt<br>outcast5.txt: table<br>outcast8.txt: bed<br>outcast11.txt: potato</p>
-<p>##题目分析<br>wordnet是一个有上下位关系的英语词典，可以描述词语间的关系。下位词是上位词的一种具体描述，是一种isa关系。例如running是dash的上位词。从数据结构上来看wordnet是一个有向无环图。每个节点是一个同义词集合（synset），一个英语单词或复合词可能有多个意思，因此可能会出现在多个不同节点中。每条边都是由下位词指向上位词，有且仅有从下位词到上位词的路径，因此不可能存在环。<br>题目中wordnet是以synsets.txt和hypernyms.txt的形式给出。synsets.txt中按字母顺序给出了所有同义词集合的序号、集合、描述。hypernyms.txt按同义词集合的序号给出了上下位的关系，每行第一个序号是下位词，之后的序号都是上位词。一个下位词可能存在多个上位词。<br>题目的要求是实现三个类：</p>
-<ul>
-<li>WordNet.java</li>
-<li>SAP.java</li>
-<li>Outcast.java</li>
-</ul>
-<p>SAP.java是一个基础类，给定一个有向图，计算两点之间的最短距离，以及两点的共同祖先。首先应该完成这个类。<br>WordNet.java中实现计算wordnet结构中两个词的最短距离及共同祖先。<br>Outcast.java就比较简单了，找出一组词中最不相关的一个，调用WordNet.java很容易实现。</p>
-<p>##SAP.java<br>下面具体分析每个类的实现<br>首先实现SAP.java，在这个类中实现计算最短距离和共同祖先的算法，然后可以应用到wordnet中。</p>
-<p>###分析<br>求最短路径和共同祖先的思想就是从两个不同节点出发，找到都能到达且距离最短的节点。要计算距离，使用广度优先搜索，并且保存和更新每个节点的到出发点的距离。</p>
-<p>成员变量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private Digraph digraph;</div><div class="line"></div><div class="line">private int ancestor;</div><div class="line">    </div><div class="line">private int length;</div></pre></td></tr></table></figure>
-<p>构造方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public SAP(Digraph G) &#123;</div><div class="line">       if (G == null) throw new NullPointerException();</div><div class="line">       this.digraph = G;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>由于最短距离是两个节点到某公共节点的距离组合，可能出现多种情况，因此自定义一个数据结构Node来表示公共节点，把所有可能的公共节点放入一个优先队列中，最后从中取最小值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">private class Node implements Comparable&lt;Node&gt; &#123;</div><div class="line">        private int length;</div><div class="line">        private int id;</div><div class="line"></div><div class="line">        Node(int length, int id) &#123;</div><div class="line">            this.length = length;</div><div class="line">            this.id = id;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public int compareTo(Node o) &#123;</div><div class="line">            if (length &gt; o.length) &#123;</div><div class="line">                return 1;</div><div class="line">            &#125; else if (length == o.length) &#123;</div><div class="line">                return 0;</div><div class="line">            &#125; else &#123;</div><div class="line">                return -1;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">```   </div><div class="line">求最短距离的完整代码：</div><div class="line"></div><div class="line">1. 先对一个节点进行广度优先搜素，计算到所有节点的距离。</div><div class="line">2. 对另一个节点进行广度优先搜素，计算到所有节点的距离，如果某节点可以从两个节点分别到达，则存在优先队列中。</div><div class="line">3. 从优先队列中取出最小值，即为最短距离。</div></pre></td></tr></table></figure>
-<p>// length of shortest ancestral path between v and w; -1 if no such path<br>    public int length(int v, int w) {<br>        if (v &lt; 0 || v &gt;= digraph.V() || w &lt; 0 || w &gt;= digraph.V())<br>            throw new IndexOutOfBoundsException();<br>        MinPQ<node> possibleLength = new MinPQ();<br>        boolean[] marked = new boolean[this.digraph.V()];<br>        marked[v] = true;<br>        int[] pathV = new int[digraph.V()];<br>        int[] pathW = new int[digraph.V()];<br>        for (int i = 0; i &lt; digraph.V(); i++) {<br>            pathV[i] = -1;<br>            pathW[i] = -1;<br>        }<br>        pathV[v] = 0;<br>        pathW[w] = 0;</node></p>
-<pre><code>    // bfs on v
-    Queue&lt;Integer&gt; queue = new Queue&lt;&gt;();
-    queue.enqueue(v);
-    while (!queue.isEmpty()) {
-        int vertex = queue.dequeue();
-        for (int nextVertex : digraph.adj(vertex)) {
-            if (!marked[nextVertex]) {
-                marked[nextVertex] = true;
-                queue.enqueue(nextVertex);
-                if (pathV[nextVertex] == -1 || pathV[nextVertex] &gt; pathV[vertex] + 1) {
-                    pathV[nextVertex] = pathV[vertex] + 1;
-                }
-
-            }
-        }
-    }
-
-    // bfs on w
-    marked = new boolean[this.digraph.V()];
-    marked[w] = true;
-    queue.enqueue(w);
-    while (!queue.isEmpty()) {
-        int vertex = queue.dequeue();
-        if (pathV[vertex] &gt; -1) {
-            Node node = new Node(pathV[vertex] + pathW[vertex], vertex);
-            possibleLength.insert(node);
-        }
-        for (int nextVertex : digraph.adj(vertex)) {
-            if (!marked[nextVertex]) {
-                marked[nextVertex] = true;
-                queue.enqueue(nextVertex);
-                if (pathW[nextVertex] == -1 || pathW[nextVertex] &gt; pathW[vertex] + 1) {
-                    pathW[nextVertex] = pathW[vertex] + 1;
-                }
-
-            }
-        }
-    }
-    if (possibleLength.size() &gt; 0) {
-        Node node = possibleLength.delMin();
-        this.length = node.length;
-        this.ancestor = node.id;
-    } else {
-        this.length = -1;
-        this.ancestor = -1;
-    }
-    return this.length;
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">共同祖先在计算最短距离时也能获得，Node中的id就是共同祖先，因此可以复用。</div></pre></td></tr></table></figure>
-<p>// a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path<br>    public int ancestor(int v, int w) {<br>        length(v, w);<br>        return this.ancestor;<br>    }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">输入的v,w为多个节点时，直接用暴力for循环找出每两个节点间的最短距离和共同祖先，存到优先队列中，最后取出的就是两组节点间的最短纪录和共同祖先。</div><div class="line">代码：</div></pre></td></tr></table></figure></p>
-<pre><code>// length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
-public int length(Iterable&lt;Integer&gt; v, Iterable&lt;Integer&gt; w) {
-    if (v == null || w == null) throw new NullPointerException();
-    MinPQ&lt;Node&gt; possibleNodes = new MinPQ();
-    for (int nodeV : v) {
-        if (nodeV &lt; 0 || nodeV &gt; this.digraph.V())
-            throw new IndexOutOfBoundsException();
-        for (int nodeW : w) {
-            if (nodeW &lt; 0 || nodeW &gt; this.digraph.V())
-                throw new IndexOutOfBoundsException();
-
-            Node node = new Node(length(nodeV, nodeW), ancestor(nodeV, nodeW));
-            possibleNodes.insert(node);
-        }
-    }
-
-    if (possibleNodes.size() &gt; 0) {
-        Node node = possibleNodes.delMin();
-        this.length = node.length;
-        this.ancestor = node.id;
-    } else {
-        this.length = -1;
-        this.ancestor = -1;
-    }
-    return this.length;
-}
-
-// a common ancestor that participates in shortest ancestral path; -1 if no such path
-public int ancestor(Iterable&lt;Integer&gt; v, Iterable&lt;Integer&gt; w) {
-    length(v, w);
-    return this.ancestor;
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">## WordNet.java</div><div class="line">要把sap中的算法实际高效地应用到wordnet中并不简单，需要找到适合的数据结构来储存我们需要的信息并且能够高效地查询。</div><div class="line"></div><div class="line">题目要求</div><div class="line"></div><div class="line">1. 返回wordnet中所有的词</div><div class="line">2. 判断一个词是否在wordnet中</div><div class="line">3. 两个词的最短距离</div><div class="line">4. 两个词最短路径上的共同上位词的同义词集合</div><div class="line"></div><div class="line"></div><div class="line">要做到1和2两个要求，需要一个没有重复词的集合，而且能够根据词来快速搜索。提到快速搜索，立即想到时间复杂度log(n)的二叉搜索树，正好符合题目的时间要求。因此，使用PartI中讲到过的SET&lt;key&gt;(在Alg4.jar中，用平衡二叉树实现log(n)的插入、搜索)。</div><div class="line"></div><div class="line">SET需要一个key来实现搜索。要求搜索的是词，但不能直接以string作为key，因为还要考虑到最短路径的实现。因此，用一个自定义结构：实现Comparable接口时比较的是词的字母顺序，另外由于词的多义性用一个ArrayList存放出现在wordnet中的可能位置。</div></pre></td></tr></table></figure>
-<p>private class Node implements Comparable<node> {<br>        private ArrayList<integer> ids;<br>        private String noun;<br>        Node(String noun) {<br>            this.noun = noun;<br>            this.ids = new ArrayList&lt;&gt;();<br>        }</integer></node></p>
-<pre><code>    private void addId(int id) {
-        this.ids.add(id);
-    }
-
-    private ArrayList&lt;Integer&gt; getIds() {
-        return this.ids;
-    }
-
-    @Override
-    public int compareTo(Node o) {
-        return this.noun.compareTo(o.noun);
-    }
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">成员变量：</div></pre></td></tr></table></figure>
-<p>private SAP wordnetSap;<br>    private Digraph digraph;<br>    private boolean hasCycle;<br>    private boolean[] onStack;<br>    private boolean[] marked;<br>    private ArrayList<integer> possibleRoots; // a DAG has only one root<br>    private ArrayList<string[]> synsets; // synsets for each wordnet node<br>    private SET<node> allNouns; // SET to store Node<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">构造方法：读取synsets.txt和hypernyms.txt,构建表示wordnet的图。Node表示词以及词可能出现的位置，建立SET。与sap中不同，共同祖先需要根据序号返回同义词组，与SET的思路不一致，因此还需要一个ArrayList来表示每个序号对应的同义词组。</div><div class="line"></div><div class="line">根据题目要求，还需要检查构建的wordnet图是否合法，即检查是否无环、是否只有一个root。这个检查合法性同样用广度优先搜索可以完成：</div><div class="line"></div><div class="line">* 是否无环：搜索时如果之前访问过某节点，则构成环。</div><div class="line">* 是否只有一个root：无论从哪个节点开始搜索，最后一个节点（没有指向其他节点的边）是唯一的。</div></pre></td></tr></table></figure></node></string[]></integer></p>
-<p>public WordNet(String synsets, String hypernyms) {<br>        if (synsets == null || hypernyms == null)<br>            throw new NullPointerException();<br>        possibleRoots = new ArrayList&lt;&gt;();<br>        this.synsets = new ArrayList&lt;&gt;();<br>        allNouns = new SET<node>();<br>        int count = 0;<br>        try {<br>            BufferedReader in = new BufferedReader(new FileReader(synsets));<br>            String line;<br>            while ((line = in.readLine()) != null) {<br>                String[] parts = line.split(“,”);<br>                String aSynset = parts[1];<br>                String[] strings = aSynset.split(“ “);<br>                for (String str : strings) {<br>                    Node node = new Node(str);<br>                    if (this.allNouns.contains(node)) {<br>                        this.allNouns.ceiling(node).addId(Integer.parseInt(parts[0]));<br>                    }else {<br>                        node.addId(Integer.parseInt(parts[0]));<br>                        this.allNouns.add(node);<br>                    }<br>                }<br>                this.synsets.add(strings);</node></p>
-<pre><code>            count++;
-        }
-        in.close();
-
-        this.digraph = new Digraph(count);
-
-        BufferedReader hypernymsReader = new BufferedReader(new FileReader(hypernyms));
-        while ((line = hypernymsReader.readLine()) != null){
-            String[] temp = line.split(&quot;,&quot;);
-            int id = Integer.parseInt(temp[0]);
-            for (int i = 1; i &lt; temp.length; i++) {
-                this.digraph.addEdge(id, Integer.parseInt(temp[i]));
-            }
-        }
-        hypernymsReader.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-
-    this.wordnetSap = new SAP(this.digraph);
-
-    onStack = new boolean[digraph.V()];
-    marked = new boolean[digraph.V()];
-    if (hasCycle(this.digraph)) throw new IllegalArgumentException();
-    if (this.possibleRoots.size() &gt; 1) throw new IllegalArgumentException();
-}
-
-private boolean hasCycle(Digraph digraph) {
-    for (int i = 0; i &lt; digraph.V(); i++) {
-        if (!this.marked[i]) dfs(digraph, i);
-    }
-    return hasCycle;
-}
-
-private void dfs(Digraph digraph, int v) {
-
-    onStack[v] = true;
-    marked[v] = true;
-
-    if (!digraph.adj(v).iterator().hasNext()) {
-        if (!this.possibleRoots.contains(v))
-            this.possibleRoots.add(v);
-    }
-    for (int w : digraph.adj(v)) {
-        if (this.hasCycle) return;
-        else if (!marked[w]) {
-            dfs(digraph, w);
-        }
-        else if (onStack[w]) this.hasCycle = true;
-    }
-    onStack[v] = false;
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">选对了合适的数据结构，完成了构造方法，其实就完成了绝大部分工作，剩下的实现就相对容易了。</div><div class="line"></div><div class="line">返回wordnet中所有的词：</div></pre></td></tr></table></figure>
-<p>public Iterable<string> nouns() {<br>        ArrayList<string> nouns = new ArrayList&lt;&gt;();<br>        for (Node node : this.allNouns) {<br>            nouns.add(node.noun);<br>        }<br>        return nouns;<br>    }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">判断一个词是否在wordnet中：</div></pre></td></tr></table></figure></string></string></p>
-<p>public boolean isNoun(String word) {<br>        if (word == null) throw new NullPointerException();<br>        Node node = new Node(word);<br>        return this.allNouns.contains(node);<br>    }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">两个词的最短距离：用SET和Node迅速找到词所对应的可能位置，用sap中的方法可以马上计算。</div></pre></td></tr></table></figure></p>
-<p>public int distance(String nounA, String nounB) {<br>        if (nounA == null || nounB == null)<br>            throw new NullPointerException();<br>        if (!isNoun(nounA) || !isNoun(nounB))<br>            throw new IllegalArgumentException();<br>        ArrayList<integer> idAs;<br>        ArrayList<integer> idBs;</integer></integer></p>
-<pre><code>    Node nodeA = new Node(nounA);
-    Node nodeB = new Node(nounB);
-    nodeA = this.allNouns.ceiling(nodeA);
-    nodeB = this.allNouns.ceiling(nodeB);
-    idAs = nodeA.getIds();
-    idBs = nodeB.getIds();
-
-    return wordnetSap.length(idAs, idBs);
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">两个词最短路径上的共同上位词的同义词集合：同样用sap中的方法找到位置，然后从事先存好的arraylist中获取同义词集合，拼接成给定的形式。</div></pre></td></tr></table></figure>
-<p>public String sap(String nounA, String nounB) {<br>        if (nounA == null || nounB == null)<br>            throw new NullPointerException();<br>        if (!isNoun(nounA) || !isNoun(nounB))<br>            throw new IllegalArgumentException();</p>
-<pre><code>    ArrayList&lt;Integer&gt; idAs;
-    ArrayList&lt;Integer&gt; idBs;
-
-    Node nodeA = new Node(nounA);
-    Node nodeB = new Node(nounB);
-    nodeA = this.allNouns.ceiling(nodeA);
-    nodeB = this.allNouns.ceiling(nodeB);
-    idAs = nodeA.getIds();
-    idBs = nodeB.getIds();
-
-    int id = wordnetSap.ancestor(idAs, idBs);
-    String[] strings = this.synsets.get(id);
-    String result = &quot;&quot;;
-    for (int i = 0; i&lt; strings.length; i++) {
-        result += strings[i];
-        if (i != strings.length - 1)
-            result += &quot; &quot;;
-    }
-    return result;
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">## Outcast.java</div><div class="line"></div><div class="line">outcast就简单了，从给定的词组中，计算每个词与其他词的最短距离之和。和最大的词自然就是与别的词最不同的了。</div></pre></td></tr></table></figure>
-<p>public class Outcast {<br>    private WordNet wordNet;</p>
-<pre><code>public Outcast(WordNet wordnet) {
-    this.wordNet = wordnet;
-}
-
-public String outcast(String[] nouns) {
-    int[] distances = new int[nouns.length];
-    for (int i = 0; i &lt; nouns.length; i++) {
-        String noun = nouns[i];
-        for (int j = 0; j &lt; nouns.length; j++) {
-            if (i != j) {
-                distances[i] += wordNet.distance(noun, nouns[j]);
-            }
-        }
-    }
-    int max = 0;
-    int id = 0;
-    for (int i = 0; i &lt; distances.length; i++) {
-        if (distances[i] &gt; max) {
-            max = distances[i];
-            id = i;
-        }
-    }
-
-    return nouns[id];
-}
-</code></pre><p>}<br>```</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>笔者水平有限，上述答案其实只有91分，运行时间不达标。抛砖引玉，希望大神们能够提出改进方法，大家一起学习进步，谢谢！</p>
-<p>项目源码在GitHub中，请点<a href="https://github.com/michael0905/WordNet" target="_blank" rel="external">这里</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/28/wordnet/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-seamcarving" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/28/seamcarving/">SeamCarving</a>
-    </h1>
   
 
-        
-        <a href="/2017/03/28/seamcarving/" class="archive-article-date">
-  	<time datetime="2017-03-28T07:56:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><p>第二周主要内容仍然是关于图的算法，主要内容为：</p>
-<ul>
-<li><p>最小生成树</p>
-<ol>
-<li><a href="http://algs4.cs.princeton.edu/43mst/KruskalMST.java.html">Kruskal算法</a></li>
-</ol>
-<ul>
-<li><a href="http://algs4.cs.princeton.edu/43mst/LazyPrimMST.java.html">延时Prim算法</a></li>
-<li><a href="http://algs4.cs.princeton.edu/43mst/PrimMST.java.html">即时Prim算法</a></li>
-</ul>
-</li>
-<li><p>最短路径</p>
-<ol>
-<li><a href="http://algs4.cs.princeton.edu/44sp/DijkstraSP.java.html">Dijkstra算法</a>：适用无负权值边的图</li>
-<li><a href="http://algs4.cs.princeton.edu/44sp/AcyclicSP.java.html">DAG最短路径算法</a>：使用拓扑排序</li>
-<li><a href="http://algs4.cs.princeton.edu/44sp/BellmanFordSP.java.html">Bellman-Ford算法</a>：适用含负权值边的图</li>
-</ol>
-</li>
-</ul>
-<p>编程作业是SeamCarver：<a href="http://coursera.cs.princeton.edu/algs4/assignments/seamCarving.html">原题地址</a></p>
-        
-          <a class="article-more-a" href="/2017/03/28/seamcarving/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/28/seamcarving/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -1324,8 +360,8 @@ public String outcast(String[] nouns) {
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

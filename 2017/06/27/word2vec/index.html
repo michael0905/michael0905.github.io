@@ -6,14 +6,38 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Yiyuan Liu&#39;s Blog</title>
+  <title>Word2vec原理浅析及tensorflow实现 | Yiyuan Liu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Yiyuan Liu's Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="Word2vec简介Word2Vec是由Google的Mikolov等人提出的一个词向量计算模型。
+
+输入：大量已分词的文本
+输出：用一个稠密向量来表示每个词
+
+词向量的重要意义在于将自然语言转换成了计算机能够理解的向量。相对于词袋模型、TF-IDF等模型，词向量能抓住词的上下文、语义，衡量词与词的相似性，在文本分类、情感分析等许多自然语言处理领域有重要作用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Word2vec原理浅析及tensorflow实现">
+<meta property="og:url" content="http://yoursite.com/2017/06/27/word2vec/index.html">
 <meta property="og:site_name" content="Yiyuan Liu's Blog">
+<meta property="og:description" content="Word2vec简介Word2Vec是由Google的Mikolov等人提出的一个词向量计算模型。
+
+输入：大量已分词的文本
+输出：用一个稠密向量来表示每个词
+
+词向量的重要意义在于将自然语言转换成了计算机能够理解的向量。相对于词袋模型、TF-IDF等模型，词向量能抓住词的上下文、语义，衡量词与词的相似性，在文本分类、情感分析等许多自然语言处理领域有重要作用。">
+<meta property="og:image" content="http://latex.codecogs.com/png.latex?\vec{man}-\vec{woman}\approx\vec{king}-\vec{queen}">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-89bef43bf853c91b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-b91517d5c00d3167.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-9871fed79a1600b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-12-12T07:47:18.170Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Yiyuan Liu's Blog">
+<meta name="twitter:title" content="Word2vec原理浅析及tensorflow实现">
+<meta name="twitter:description" content="Word2vec简介Word2Vec是由Google的Mikolov等人提出的一个词向量计算模型。
+
+输入：大量已分词的文本
+输出：用一个稠密向量来表示每个词
+
+词向量的重要意义在于将自然语言转换成了计算机能够理解的向量。相对于词袋模型、TF-IDF等模型，词向量能抓住词的上下文、语义，衡量词与词的相似性，在文本分类、情感分析等许多自然语言处理领域有重要作用。">
+<meta name="twitter:image" content="http://latex.codecogs.com/png.latex?\vec{man}-\vec{woman}\approx\vec{king}-\vec{queen}">
   
     <link rel="alternative" href="/atom.xml" title="Yiyuan Liu&#39;s Blog" type="application/atom+xml">
   
@@ -135,202 +159,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-Tensorflow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-word2vec" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/12/Tensorflow/">Tensorflow实践：用神经网络训练分类器</a>
-    </h1>
-  
-
-        
-        <a href="/2017/12/12/Tensorflow/" class="archive-article-date">
-  	<time datetime="2017-12-12T07:48:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="任务："><a href="#任务：" class="headerlink" title="任务："></a>任务：</h3><p>使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：<br><img src="http://upload-images.jianshu.io/upload_images/1972331-342260dd468676cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="螺旋形数据点"></p>
-<h3 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h3><p>数据点一共有三个类别，而且是螺旋形交织在一起，显然是线性不可分的，需要一个非线性的分类器。这里选择神经网络。<br>输入的数据点是二维的，因此每个点只有x,y坐标这个原始特征。这里设计的神经网络有两个隐藏层，每层有50个神经元，足够抓住数据点的高维特征（实际上每层10个都够用了）。最后输出层是一个逻辑回归，根据隐藏层计算出的50个特征来预测数据点的分类（红、黄、蓝）。<br>一般训练数据多的话，应该用随机梯度下降来训练神经网络，这里训练数据较少（300），就直接批量梯度下降了。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 导入包、初始化</span></div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"></div><div class="line">%matplotlib inline</div><div class="line">plt.rcParams[<span class="string">'figure.figsize'</span>] = (<span class="number">10.0</span>, <span class="number">8.0</span>) <span class="comment"># set default size of plots</span></div><div class="line">plt.rcParams[<span class="string">'image.interpolation'</span>] = <span class="string">'nearest'</span></div><div class="line">plt.rcParams[<span class="string">'image.cmap'</span>] = <span class="string">'gray'</span></div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成螺旋形的线形不可分数据点</span></div><div class="line">np.random.seed(<span class="number">0</span>)</div><div class="line">N = <span class="number">100</span> <span class="comment"># 每个类的数据个数</span></div><div class="line">D = <span class="number">2</span> <span class="comment"># 输入维度</span></div><div class="line">K = <span class="number">3</span> <span class="comment"># 类的个数</span></div><div class="line">X = np.zeros((N*K,D))</div><div class="line">num_train_examples = X.shape[<span class="number">0</span>]</div><div class="line">y = np.zeros(N*K, dtype=<span class="string">'uint8'</span>)</div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> xrange(K):</div><div class="line">  ix = range(N*j,N*(j+<span class="number">1</span>))</div><div class="line">  r = np.linspace(<span class="number">0.0</span>,<span class="number">1</span>,N) <span class="comment"># radius</span></div><div class="line">  t = np.linspace(j*<span class="number">4</span>,(j+<span class="number">1</span>)*<span class="number">4</span>,N) + np.random.randn(N)*<span class="number">0.2</span> <span class="comment"># theta</span></div><div class="line">  X[ix] = np.c_[r*np.sin(t), r*np.cos(t)]</div><div class="line">  y[ix] = j</div><div class="line">fig = plt.figure()</div><div class="line">plt.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y, s=<span class="number">40</span>, cmap=plt.cm.Spectral)</div><div class="line">plt.xlim([<span class="number">-1</span>,<span class="number">1</span>])</div><div class="line">plt.ylim([<span class="number">-1</span>,<span class="number">1</span>])</div></pre></td></tr></table></figure>
-<p><img src="http://upload-images.jianshu.io/upload_images/1972331-342260dd468676cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="螺旋形数据点"></p>
-<p>打印输出输入X和label的shape<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">num_label = <span class="number">3</span></div><div class="line">labels = (np.arange(num_label) == y[:,<span class="keyword">None</span>]).astype(np.float32)</div><div class="line">labels.shape</div></pre></td></tr></table></figure></p>
-<pre><code>(300, 3)
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">X.shape</div></pre></td></tr></table></figure>
-<pre><code>(300, 2)
-</code></pre><p>用tensorflow构建神经网络<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> math</div><div class="line"></div><div class="line">N = <span class="number">100</span> <span class="comment"># 每个类的数据个数</span></div><div class="line">D = <span class="number">2</span> <span class="comment"># 输入维度</span></div><div class="line">num_label = <span class="number">3</span> <span class="comment"># 类的个数</span></div><div class="line">num_data = N * num_label</div><div class="line">hidden_size_1 = <span class="number">50</span></div><div class="line">hidden_size_2 = <span class="number">50</span></div><div class="line"></div><div class="line">beta = <span class="number">0.001</span> <span class="comment"># L2 正则化系数</span></div><div class="line">learning_rate = <span class="number">0.1</span> <span class="comment"># 学习速率</span></div><div class="line"></div><div class="line">labels = (np.arange(num_label) == y[:,<span class="keyword">None</span>]).astype(np.float32)</div><div class="line"></div><div class="line">graph = tf.Graph()</div><div class="line"><span class="keyword">with</span> graph.as_default():</div><div class="line">    x = tf.constant(X.astype(np.float32))</div><div class="line">    tf_labels = tf.constant(labels)</div><div class="line"></div><div class="line">    <span class="comment"># 隐藏层1</span></div><div class="line">    hidden_layer_weights_1 = tf.Variable(</div><div class="line">    tf.truncated_normal([D, hidden_size_1], stddev=math.sqrt(<span class="number">2.0</span>/num_data)))</div><div class="line">    hidden_layer_bias_1 = tf.Variable(tf.zeros([hidden_size_1]))</div><div class="line"></div><div class="line">    <span class="comment"># 隐藏层2</span></div><div class="line">    hidden_layer_weights_2 = tf.Variable(</div><div class="line">    tf.truncated_normal([hidden_size_1, hidden_size_2], stddev=math.sqrt(<span class="number">2.0</span>/hidden_size_1)))</div><div class="line">    hidden_layer_bias_2 = tf.Variable(tf.zeros([hidden_size_2]))</div><div class="line"></div><div class="line">    <span class="comment"># 输出层</span></div><div class="line">    out_weights = tf.Variable(</div><div class="line">    tf.truncated_normal([hidden_size_2, num_label], stddev=math.sqrt(<span class="number">2.0</span>/hidden_size_2)))</div><div class="line">    out_bias = tf.Variable(tf.zeros([num_label]))</div><div class="line"></div><div class="line">    z1 = tf.matmul(x, hidden_layer_weights_1) + hidden_layer_bias_1</div><div class="line">    h1 = tf.nn.relu(z1)</div><div class="line"></div><div class="line">    z2 = tf.matmul(h1, hidden_layer_weights_2) + hidden_layer_bias_2</div><div class="line">    h2 = tf.nn.relu(z2)</div><div class="line"></div><div class="line">    logits = tf.matmul(h2, out_weights) + out_bias</div><div class="line"></div><div class="line">    <span class="comment"># L2正则化</span></div><div class="line">    regularization = tf.nn.l2_loss(hidden_layer_weights_1) + tf.nn.l2_loss(hidden_layer_weights_2) + tf.nn.l2_loss(out_weights)</div><div class="line">    loss = tf.reduce_mean(</div><div class="line">        tf.nn.softmax_cross_entropy_with_logits(labels=tf_labels, logits=logits) + beta * regularization)</div><div class="line"></div><div class="line">    optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)</div><div class="line"></div><div class="line">    train_prediction = tf.nn.softmax(logits)</div><div class="line"></div><div class="line">    weights = [hidden_layer_weights_1, hidden_layer_bias_1, hidden_layer_weights_2, hidden_layer_bias_2, out_weights, out_bias]</div></pre></td></tr></table></figure></p>
-<p>上一步相当于搭建了神经网络的骨架，现在需要训练。每1000步训练，打印交叉熵损失和正确率。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">num_steps = <span class="number">50000</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">accuracy</span><span class="params">(predictions, labels)</span>:</span></div><div class="line">    <span class="keyword">return</span> (<span class="number">100.0</span> * np.sum(np.argmax(predictions, <span class="number">1</span>) == np.argmax(labels, <span class="number">1</span>))</div><div class="line">          / predictions.shape[<span class="number">0</span>])</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">relu</span><span class="params">(x)</span>:</span></div><div class="line">    <span class="keyword">return</span> np.maximum(<span class="number">0</span>,x)</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">with</span> tf.Session(graph=graph) <span class="keyword">as</span> session:</div><div class="line">    tf.global_variables_initializer().run()</div><div class="line">    print(<span class="string">'Initialized'</span>)</div><div class="line">    <span class="keyword">for</span> step <span class="keyword">in</span> range(num_steps):</div><div class="line">        _, l, predictions = session.run([optimizer, loss, train_prediction])</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (step % <span class="number">1000</span> == <span class="number">0</span>):</div><div class="line">            print(<span class="string">'Loss at step %d: %f'</span> % (step, l))</div><div class="line">            print(<span class="string">'Training accuracy: %.1f%%'</span> % accuracy(</div><div class="line">                predictions, labels))</div><div class="line"></div><div class="line">    w1, b1, w2, b2, w3, b3 = weights</div><div class="line">    <span class="comment"># 显示分类器</span></div><div class="line">    h = <span class="number">0.02</span></div><div class="line">    x_min, x_max = X[:, <span class="number">0</span>].min() - <span class="number">1</span>, X[:, <span class="number">0</span>].max() + <span class="number">1</span></div><div class="line">    y_min, y_max = X[:, <span class="number">1</span>].min() - <span class="number">1</span>, X[:, <span class="number">1</span>].max() + <span class="number">1</span></div><div class="line">    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),</div><div class="line">                         np.arange(y_min, y_max, h))</div><div class="line"></div><div class="line">    Z = np.dot(relu(np.dot(relu(np.dot(np.c_[xx.ravel(), yy.ravel()], w1.eval()) + b1.eval()), w2.eval()) + b2.eval()), w3.eval()) + b3.eval()</div><div class="line">    Z = np.argmax(Z, axis=<span class="number">1</span>)</div><div class="line">    Z = Z.reshape(xx.shape)</div><div class="line">    fig = plt.figure()</div><div class="line">    plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral, alpha=<span class="number">0.8</span>)</div><div class="line">    plt.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y, s=<span class="number">40</span>, cmap=plt.cm.Spectral)</div><div class="line">    plt.xlim(xx.min(), xx.max())</div><div class="line">    plt.ylim(yy.min(), yy.max())</div></pre></td></tr></table></figure></p>
-<pre><code>Initialized
-Loss at step 0: 1.132545
-Training accuracy: 43.7%
-Loss at step 1000: 0.257016
-Training accuracy: 94.0%
-Loss at step 2000: 0.165511
-Training accuracy: 98.0%
-Loss at step 3000: 0.149266
-Training accuracy: 99.0%
-Loss at step 4000: 0.142311
-Training accuracy: 99.3%
-Loss at step 5000: 0.137762
-Training accuracy: 99.3%
-Loss at step 6000: 0.134356
-Training accuracy: 99.3%
-Loss at step 7000: 0.131588
-Training accuracy: 99.3%
-Loss at step 8000: 0.129299
-Training accuracy: 99.3%
-Loss at step 9000: 0.127340
-Training accuracy: 99.3%
-Loss at step 10000: 0.125686
-Training accuracy: 99.3%
-Loss at step 11000: 0.124293
-Training accuracy: 99.3%
-Loss at step 12000: 0.123130
-Training accuracy: 99.3%
-Loss at step 13000: 0.122149
-Training accuracy: 99.3%
-Loss at step 14000: 0.121309
-Training accuracy: 99.3%
-Loss at step 15000: 0.120542
-Training accuracy: 99.3%
-Loss at step 16000: 0.119895
-Training accuracy: 99.3%
-Loss at step 17000: 0.119335
-Training accuracy: 99.3%
-Loss at step 18000: 0.118836
-Training accuracy: 99.3%
-Loss at step 19000: 0.118376
-Training accuracy: 99.3%
-Loss at step 20000: 0.117974
-Training accuracy: 99.3%
-Loss at step 21000: 0.117601
-Training accuracy: 99.3%
-Loss at step 22000: 0.117253
-Training accuracy: 99.3%
-Loss at step 23000: 0.116887
-Training accuracy: 99.3%
-Loss at step 24000: 0.116561
-Training accuracy: 99.3%
-Loss at step 25000: 0.116265
-Training accuracy: 99.3%
-Loss at step 26000: 0.115995
-Training accuracy: 99.3%
-Loss at step 27000: 0.115750
-Training accuracy: 99.3%
-Loss at step 28000: 0.115521
-Training accuracy: 99.3%
-Loss at step 29000: 0.115310
-Training accuracy: 99.3%
-Loss at step 30000: 0.115111
-Training accuracy: 99.3%
-Loss at step 31000: 0.114922
-Training accuracy: 99.3%
-Loss at step 32000: 0.114743
-Training accuracy: 99.3%
-Loss at step 33000: 0.114567
-Training accuracy: 99.3%
-Loss at step 34000: 0.114401
-Training accuracy: 99.3%
-Loss at step 35000: 0.114242
-Training accuracy: 99.3%
-Loss at step 36000: 0.114086
-Training accuracy: 99.3%
-Loss at step 37000: 0.113933
-Training accuracy: 99.3%
-Loss at step 38000: 0.113785
-Training accuracy: 99.3%
-Loss at step 39000: 0.113644
-Training accuracy: 99.3%
-Loss at step 40000: 0.113504
-Training accuracy: 99.3%
-Loss at step 41000: 0.113366
-Training accuracy: 99.3%
-Loss at step 42000: 0.113229
-Training accuracy: 99.3%
-Loss at step 43000: 0.113096
-Training accuracy: 99.3%
-Loss at step 44000: 0.112966
-Training accuracy: 99.3%
-Loss at step 45000: 0.112838
-Training accuracy: 99.3%
-Loss at step 46000: 0.112711
-Training accuracy: 99.3%
-Loss at step 47000: 0.112590
-Training accuracy: 99.3%
-Loss at step 48000: 0.112472
-Training accuracy: 99.3%
-Loss at step 49000: 0.112358
-Training accuracy: 99.3%
-</code></pre><p><img src="http://upload-images.jianshu.io/upload_images/1972331-cf38f01b02145209.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="分类器.png"></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">神经网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/12/Tensorflow/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-word2vec" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/27/word2vec/">Word2vec原理浅析及tensorflow实现</a>
+    <h1 class="article-title" itemprop="name">
+      Word2vec原理浅析及tensorflow实现
     </h1>
   
 
@@ -349,896 +185,59 @@ Training accuracy: 99.3%
 <li>输出：用一个稠密向量来表示每个词</li>
 </ul>
 <p>词向量的重要意义在于将自然语言转换成了计算机能够理解的向量。相对于词袋模型、TF-IDF等模型，词向量能抓住词的上下文、语义，衡量词与词的相似性，在文本分类、情感分析等许多自然语言处理领域有重要作用。</p>
-        
-          <a class="article-more-a" href="/2017/06/27/word2vec/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自然语言处理//" class="article-tag-list-link color2">自然语言处理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/27/word2vec/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-python根据BM25实现文本检索" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/python根据BM25实现文本检索/">python文本相似度计算</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/23/python根据BM25实现文本检索/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:25:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>给定一个或多个搜索词，如“高血压 患者”，从已有的若干篇文本中找出最相关的(n篇)文本。</p>
-<h2 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h2><p>文本检索（text retrieve）的常用策略是：用一个ranking function根据搜索词对所有文本进行排序，选取前n个，就像百度搜索一样。<br>显然，ranking function是决定检索效果最重要的因素，本文选用了在实际应用中效果很好的BM25。BM25其实只用到了一些基础的统计和文本处理的方法，没有很高深的算法。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/python根据BM25实现文本检索/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自然语言处理//" class="article-tag-list-link color2">自然语言处理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/python根据BM25实现文本检索/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-AFNetworking 3.x 使用心得" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/AFNetworking 3.x 使用心得/">AFNetworking 3.x 使用心得</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/23/AFNetworking 3.x 使用心得/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:18:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。<br>在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。</p>
-<p>##AFNetworking进一步封装<br>AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还是不够。AFNetworking是一个通用的库，而在我们自己的项目中，有特定的需求，而且往往在许多类中都需要用到网络请求。对AFNetworking进一步封装，能够大大简化代码，减少重复。<br>举个例子，新建一个CDMNetworkManager类，继承AFHTTPSessionManager。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/AFNetworking 3.x 使用心得/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/iOS开发//" class="article-tag-list-link color1">iOS开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/AFNetworking 3.x 使用心得/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-CoreBluetooth连接蓝牙健康设备" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/">CoreBluetooth连接蓝牙健康设备</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:14:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>##引言<br>CoreBluetooth是iOS下用于蓝牙设备连接的模块，支持蓝牙4.0及以上的设备。蓝牙设备五花八门，本文的主角是蓝牙健康设备，目标是在iPhone上获取蓝牙健康设备测量到的数据（android手机请看<a href="http://www.jianshu.com/p/f4d9bfcd4594">这篇文章</a>）。<br>本文使用的蓝牙健康设备是日本A&amp;D公司生产的蓝牙血压计(UA-651BLE)和体温计（UT-201BLE）。使用这两个型号的健康设备是因为它们是康体佳联盟（continua health alliance）认证的，接口是标准化的，没有进行加密。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/iOS开发//" class="article-tag-list-link color1">iOS开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Android蓝牙健康设备开发：Health Device Profile(HDP)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/">Android蓝牙健康设备开发：Health Device Profile(HDP)</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:13:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。<br>1、相关概念<br>HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profile，由蓝牙技术联盟（Bluetooth SIG）发布。并不是所有蓝牙设备都可以采用HDP，只有经典蓝牙（BR/EDR）设备才可以。低功耗蓝牙设备，即蓝牙4.0及以上，采用的是GATT等profile。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Android开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Android开发//" class="article-tag-list-link color5">Android开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-python文本相似度计算" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/28/python文本相似度计算/">python文本相似度计算</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/28/python文本相似度计算/" class="archive-article-date">
-  	<time datetime="2017-04-28T14:38:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ol>
-<li>分词、去停用词</li>
-<li>词袋模型向量化文本</li>
-<li>TF-IDF模型向量化文本</li>
-<li>LSI模型向量化文本</li>
-<li>计算相似度</li>
-</ol>
-        
-          <a class="article-more-a" href="/2017/04/28/python文本相似度计算/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自然语言处理//" class="article-tag-list-link color2">自然语言处理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/28/python文本相似度计算/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-wordnet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/28/wordnet/">WordNet</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/28/wordnet/" class="archive-article-date">
-  	<time datetime="2017-03-28T07:58:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近在coursera上学习Princeton大学的Algorithm PartII，这个系列的两门课是我见过最好的算法课。主讲Robert Sedgewick师承高德纳，声名远播，虽然年纪大了，但是讲课思路清晰，深入浅出。与Kevin Wayne共同编著的《算法》第四版作为教材，没有《算法导论》那么偏理论、晦涩难懂，能够把常见的数据结构和算法讲得很透彻，容易理解。<br>更值得称道的是这门课编程作业及其评分系统。上课的内容是基础的数据结构和算法，但编程作业往往是这些算法的实际应用，能真正理解为什么在给定的情况下要使用这样的数据结构、算法。作业的评分不仅仅是看正确与否，还有运行时间、内存的要求，会给出详细的分析报告，如果不是ACM大神，这些作业都值得花时间去仔细琢磨。<br>下面进入正题，第一周的作业WordNet</p>
-<p>##题目<br>WordNet is a semantic lexicon for theEnglish language that is used extensively by computational linguistsand cognitive scientists; for example, it was a key component in IBM’sWatson.WordNet groups words into sets of synonyms called synsets and describes semantic relationships between them.One such relationship is the is-a relationship, which connects a hyponym(more specific synset) to a hypernym (more general synset).For example, locomotion is a hypernym of runningand running is a hypernym of dash.</p>
-<p>The WordNet digraph.Your first task is to build the wordnet digraph: each vertex v is an integer that represents a synset, and each directed edge v→w represents that w is a hypernym of v.The wordnet digraph is a rooted DAG: it is acylic and has one vertex thatis an ancestor of every other vertex.However, it is not necessarily a tree because a synset can have more than onehypernym. A small subgraph of the wordnet digraph is illustrated below.</p>
-<p>The WordNet input file formats.We now describe the two data files that you will use to create the wordnet digraph.The files are in CSV format: each line contains a sequence of fields,separated by commas.</p>
-<p>List of noun synsets.The file synsets.txtlists all the (noun) synsets in WordNet.The first field is the synset id (an integer),the second field is the synonym set (or synset), and thethird field is its dictionary definition (or gloss).For example, the line<br>36,AND_circuit AND_gate,a circuit in a computer that fires only when all of its inputs fire<br>means that the synset { AND_circuit, AND_gate }has an id number of 36 and it’s gloss isa circuit in a computer that fires only when all of its inputs fire.The individual nouns that comprise a synset are separatedby spaces (and a synset element is not permitted to contain a space).The S synset ids are numbered 0 through S − 1;the id numbers will appear consecutively in the synset file.<br>List of hypernyms.The file hypernyms.txtcontains the hypernym relationships:The first field is a synset id; subsequent fields are the id numbersof the synset’s hypernyms. For example, the following line<br>164,21012,56099<br>means that the the synset 164 (“Actifed”) has two hypernyms:21012 (“antihistamine”) and56099 (“nasal_decongestant”),representing that Actifed is both an antihistamine and a nasal decongestant.The synsets are obtained from the corresponding lines in the file synsets.txt.</p>
-<p>164,Actifed,trade name for a drug containing an antihistamine and a decongestant…<br>21012,antihistamine,a medicine used to treat allergies…<br>56099,nasal_decongestant,a decongestant that provides temporary relief of nasal…<br>WordNet data type.Implement an immutable data type WordNet with the following API:</p>
-<p>// constructor takes the name of the two input files<br>public WordNet(String synsets, String hypernyms)</p>
-<p>// the set of nouns (no duplicates), returned as an Iterable<br>public Iterable<string> nouns()</string></p>
-<p>// is the word a WordNet noun?<br>public boolean isNoun(String word)</p>
-<p>// distance between nounA and nounB (defined below)<br>public int distance(String nounA, String nounB)</p>
-<p>// a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB<br>// in a shortest ancestral path (defined below)<br>public String sap(String nounA, String nounB)</p>
-<p>// for unit testing of this class<br>public static void main(String[] args)<br>The constructor should throw a java.lang.IllegalArgumentExceptionif the input does not correspond to a rooted DAG.The distance() and sap() methodsshould throw a java.lang.IllegalArgumentExceptionunless both of the noun arguments are WordNet nouns.<br>Your data type should use space linear in the input size(size of synsets and hypernyms files).The constructor should take time linearithmic (or better) in the input size.The method isNoun() should run in time logarithmic (or better) inthe number of nouns.The methods distance() and sap() should run in time linear in thesize of the WordNet digraph.</p>
-<p>Shortest ancestral path.An ancestral path between two verticesv and w in a digraph is a directed path fromv to a common ancestor x, together witha directed path from w to the same ancestor x. A shortest ancestral path is an ancestral path of minimum total length.For example, in the digraph at left(digraph1.txt),the shortest ancestral path between3 and 11 has length 4 (with common ancestor 1).In the digraph at right (digraph2.txt),one ancestral path between 1 and 5 has length 4(with common ancestor 5), but the shortest ancestral path has length 2(with common ancestor 0).</p>
-<p>SAP data type.Implement an immutable data type SAP with the following API:</p>
-<p>// constructor takes a digraph (not necessarily a DAG)<br>public SAP(Digraph G)</p>
-<p>// length of shortest ancestral path between v and w; -1 if no such path<br>public int length(int v, int w)</p>
-<p>// a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path<br>public int ancestor(int v, int w)</p>
-<p>// length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path<br>public int length(Iterable<integer> v, Iterable<integer> w)</integer></integer></p>
-<p>// a common ancestor that participates in shortest ancestral path; -1 if no such path<br>public int ancestor(Iterable<integer> v, Iterable<integer> w)</integer></integer></p>
-<p>// for unit testing of this class (such as the one below)<br>public static void main(String[] args)<br>All methods should throw a java.lang.IndexOutOfBoundsException if one (or more) of the input arguments is not between 0 and G.V() - 1.You may assume that the iterable arguments contain at least one integer.All methods (and the constructor) should take time at mostproportional to E + Vin the worst case, where E and V are the number of edges and verticesin the digraph, respectively.Your data type should use space proportional to E + V.<br>Test client.The following test client takes the name of a digraph input file asas a command-line argument, constructs the digraph,reads in vertex pairs from standard input,and prints out the length of the shortest ancestral path between the two verticesand a common ancestor that participates in that path:</p>
-<p>public static void main(String[] args) {<br>    In in = new In(args[0]);<br>    Digraph G = new Digraph(in);<br>    SAP sap = new SAP(G);<br>    while (!StdIn.isEmpty()) {<br>        int v = StdIn.readInt();<br>        int w = StdIn.readInt();<br>        int length   = sap.length(v, w);<br>        int ancestor = sap.ancestor(v, w);<br>        StdOut.printf(“length = %d, ancestor = %d\n”, length, ancestor);<br>    }<br>}<br>Here is a sample execution:<br>% more digraph1.txt             % java SAP digraph1.txt<br>13                              3 11<br>11                              length = 4, ancestor = 1<br> 7  3<br> 8  3                           9 12<br> 3  1                           length = 3, ancestor = 5<br> 4  1<br> 5  1                           7 2<br> 9  5                           length = 4, ancestor = 0<br>10  5<br>11 10                           1 6<br>12 10                           length = -1, ancestor = -1<br> 1  0<br> 2  0<br>Measuring the semantic relatedness of two nouns.Semantic relatedness refers to the degree to which two concepts are related. Measuring semantic relatedness is a challenging problem. For example, most of us agree that George Bush and John Kennedy (two U.S. presidents)are more related than are George Bushand chimpanzee (two primates). However, not most of us agree that George Bush and Eric Arthur Blair are related concepts. But if one is aware that George Bush and Eric Arthur Blair (aka George Orwell) are both communicators, then it becomes clear that the two concepts might be related.</p>
-<p>We define the semantic relatednessof two wordnet nouns A and B as follows:</p>
-<p>distance(A, B) = distance is the minimum length of any ancestral path betweenany synset v of A and any synset w of B.<br>This is the notion of distance that you will use to implement thedistance() and sap() methods in the WordNet data type.</p>
-<p>Outcast detection.Given a list of wordnet nouns A1, A2,…, An, which nounis the least related to the others? To identify an outcast,compute the sum of the distances between each noun and every other one:</p>
-<p>di   =  dist(Ai, A1)   +  dist(Ai, A2)   +   …   +   dist(Ai, An)<br>and return a noun Atfor which dt is maximum.<br>Implement an immutable data type Outcast with the following API:</p>
-<p>// constructor takes a WordNet object<br>public Outcast(WordNet wordnet)</p>
-<p>// given an array of WordNet nouns, return an outcast<br>public String outcast(String[] nouns)</p>
-<p>// for unit testing of this class (such as the one below)<br>public static void main(String[] args)<br>Assume that argument array to the outcast() methodcontains only valid wordnet nouns (and that it contains at least two such nouns).<br>The following test client takes from the command line the name of a synset file, the name of a hypernym file, followed by thenames of outcast files, and prints out an outcast in each file:</p>
-<p>public static void main(String[] args) {<br>    WordNet wordnet = new WordNet(args[0], args[1]);<br>    Outcast outcast = new Outcast(wordnet);<br>    for (int t = 2; t &lt; args.length; t++) {<br>        In in = new In(args[t]);<br>        String[] nouns = in.readAllStrings();<br>        StdOut.println(args[t] + “: “ + outcast.outcast(nouns));<br>    }<br>}<br>Here is a sample execution:<br>% more outcast5.txt<br>horse zebra cat bear table</p>
-<p>% more outcast8.txt<br>water soda bed orange_juice milk apple_juice tea coffee</p>
-<p>% more outcast11.txt<br>apple pear peach banana lime lemon blueberry strawberry mango watermelon potato</p>
-<p>% java Outcast synsets.txt hypernyms.txt outcast5.txt outcast8.txt outcast11.txt<br>outcast5.txt: table<br>outcast8.txt: bed<br>outcast11.txt: potato</p>
-<p>##题目分析<br>wordnet是一个有上下位关系的英语词典，可以描述词语间的关系。下位词是上位词的一种具体描述，是一种isa关系。例如running是dash的上位词。从数据结构上来看wordnet是一个有向无环图。每个节点是一个同义词集合（synset），一个英语单词或复合词可能有多个意思，因此可能会出现在多个不同节点中。每条边都是由下位词指向上位词，有且仅有从下位词到上位词的路径，因此不可能存在环。<br>题目中wordnet是以synsets.txt和hypernyms.txt的形式给出。synsets.txt中按字母顺序给出了所有同义词集合的序号、集合、描述。hypernyms.txt按同义词集合的序号给出了上下位的关系，每行第一个序号是下位词，之后的序号都是上位词。一个下位词可能存在多个上位词。<br>题目的要求是实现三个类：</p>
-<ul>
-<li>WordNet.java</li>
-<li>SAP.java</li>
-<li>Outcast.java</li>
-</ul>
-<p>SAP.java是一个基础类，给定一个有向图，计算两点之间的最短距离，以及两点的共同祖先。首先应该完成这个类。<br>WordNet.java中实现计算wordnet结构中两个词的最短距离及共同祖先。<br>Outcast.java就比较简单了，找出一组词中最不相关的一个，调用WordNet.java很容易实现。</p>
-<p>##SAP.java<br>下面具体分析每个类的实现<br>首先实现SAP.java，在这个类中实现计算最短距离和共同祖先的算法，然后可以应用到wordnet中。</p>
-<p>###分析<br>求最短路径和共同祖先的思想就是从两个不同节点出发，找到都能到达且距离最短的节点。要计算距离，使用广度优先搜索，并且保存和更新每个节点的到出发点的距离。</p>
-<p>成员变量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private Digraph digraph;</div><div class="line"></div><div class="line">private int ancestor;</div><div class="line">    </div><div class="line">private int length;</div></pre></td></tr></table></figure>
-<p>构造方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public SAP(Digraph G) &#123;</div><div class="line">       if (G == null) throw new NullPointerException();</div><div class="line">       this.digraph = G;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>由于最短距离是两个节点到某公共节点的距离组合，可能出现多种情况，因此自定义一个数据结构Node来表示公共节点，把所有可能的公共节点放入一个优先队列中，最后从中取最小值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">private class Node implements Comparable&lt;Node&gt; &#123;</div><div class="line">        private int length;</div><div class="line">        private int id;</div><div class="line"></div><div class="line">        Node(int length, int id) &#123;</div><div class="line">            this.length = length;</div><div class="line">            this.id = id;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public int compareTo(Node o) &#123;</div><div class="line">            if (length &gt; o.length) &#123;</div><div class="line">                return 1;</div><div class="line">            &#125; else if (length == o.length) &#123;</div><div class="line">                return 0;</div><div class="line">            &#125; else &#123;</div><div class="line">                return -1;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">```   </div><div class="line">求最短距离的完整代码：</div><div class="line"></div><div class="line">1. 先对一个节点进行广度优先搜素，计算到所有节点的距离。</div><div class="line">2. 对另一个节点进行广度优先搜素，计算到所有节点的距离，如果某节点可以从两个节点分别到达，则存在优先队列中。</div><div class="line">3. 从优先队列中取出最小值，即为最短距离。</div></pre></td></tr></table></figure>
-<p>// length of shortest ancestral path between v and w; -1 if no such path<br>    public int length(int v, int w) {<br>        if (v &lt; 0 || v &gt;= digraph.V() || w &lt; 0 || w &gt;= digraph.V())<br>            throw new IndexOutOfBoundsException();<br>        MinPQ<node> possibleLength = new MinPQ();<br>        boolean[] marked = new boolean[this.digraph.V()];<br>        marked[v] = true;<br>        int[] pathV = new int[digraph.V()];<br>        int[] pathW = new int[digraph.V()];<br>        for (int i = 0; i &lt; digraph.V(); i++) {<br>            pathV[i] = -1;<br>            pathW[i] = -1;<br>        }<br>        pathV[v] = 0;<br>        pathW[w] = 0;</node></p>
-<pre><code>    // bfs on v
-    Queue&lt;Integer&gt; queue = new Queue&lt;&gt;();
-    queue.enqueue(v);
-    while (!queue.isEmpty()) {
-        int vertex = queue.dequeue();
-        for (int nextVertex : digraph.adj(vertex)) {
-            if (!marked[nextVertex]) {
-                marked[nextVertex] = true;
-                queue.enqueue(nextVertex);
-                if (pathV[nextVertex] == -1 || pathV[nextVertex] &gt; pathV[vertex] + 1) {
-                    pathV[nextVertex] = pathV[vertex] + 1;
-                }
-
-            }
-        }
-    }
-
-    // bfs on w
-    marked = new boolean[this.digraph.V()];
-    marked[w] = true;
-    queue.enqueue(w);
-    while (!queue.isEmpty()) {
-        int vertex = queue.dequeue();
-        if (pathV[vertex] &gt; -1) {
-            Node node = new Node(pathV[vertex] + pathW[vertex], vertex);
-            possibleLength.insert(node);
-        }
-        for (int nextVertex : digraph.adj(vertex)) {
-            if (!marked[nextVertex]) {
-                marked[nextVertex] = true;
-                queue.enqueue(nextVertex);
-                if (pathW[nextVertex] == -1 || pathW[nextVertex] &gt; pathW[vertex] + 1) {
-                    pathW[nextVertex] = pathW[vertex] + 1;
-                }
-
-            }
-        }
-    }
-    if (possibleLength.size() &gt; 0) {
-        Node node = possibleLength.delMin();
-        this.length = node.length;
-        this.ancestor = node.id;
-    } else {
-        this.length = -1;
-        this.ancestor = -1;
-    }
-    return this.length;
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">共同祖先在计算最短距离时也能获得，Node中的id就是共同祖先，因此可以复用。</div></pre></td></tr></table></figure>
-<p>// a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path<br>    public int ancestor(int v, int w) {<br>        length(v, w);<br>        return this.ancestor;<br>    }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">输入的v,w为多个节点时，直接用暴力for循环找出每两个节点间的最短距离和共同祖先，存到优先队列中，最后取出的就是两组节点间的最短纪录和共同祖先。</div><div class="line">代码：</div></pre></td></tr></table></figure></p>
-<pre><code>// length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
-public int length(Iterable&lt;Integer&gt; v, Iterable&lt;Integer&gt; w) {
-    if (v == null || w == null) throw new NullPointerException();
-    MinPQ&lt;Node&gt; possibleNodes = new MinPQ();
-    for (int nodeV : v) {
-        if (nodeV &lt; 0 || nodeV &gt; this.digraph.V())
-            throw new IndexOutOfBoundsException();
-        for (int nodeW : w) {
-            if (nodeW &lt; 0 || nodeW &gt; this.digraph.V())
-                throw new IndexOutOfBoundsException();
-
-            Node node = new Node(length(nodeV, nodeW), ancestor(nodeV, nodeW));
-            possibleNodes.insert(node);
-        }
-    }
-
-    if (possibleNodes.size() &gt; 0) {
-        Node node = possibleNodes.delMin();
-        this.length = node.length;
-        this.ancestor = node.id;
-    } else {
-        this.length = -1;
-        this.ancestor = -1;
-    }
-    return this.length;
-}
-
-// a common ancestor that participates in shortest ancestral path; -1 if no such path
-public int ancestor(Iterable&lt;Integer&gt; v, Iterable&lt;Integer&gt; w) {
-    length(v, w);
-    return this.ancestor;
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">## WordNet.java</div><div class="line">要把sap中的算法实际高效地应用到wordnet中并不简单，需要找到适合的数据结构来储存我们需要的信息并且能够高效地查询。</div><div class="line"></div><div class="line">题目要求</div><div class="line"></div><div class="line">1. 返回wordnet中所有的词</div><div class="line">2. 判断一个词是否在wordnet中</div><div class="line">3. 两个词的最短距离</div><div class="line">4. 两个词最短路径上的共同上位词的同义词集合</div><div class="line"></div><div class="line"></div><div class="line">要做到1和2两个要求，需要一个没有重复词的集合，而且能够根据词来快速搜索。提到快速搜索，立即想到时间复杂度log(n)的二叉搜索树，正好符合题目的时间要求。因此，使用PartI中讲到过的SET&lt;key&gt;(在Alg4.jar中，用平衡二叉树实现log(n)的插入、搜索)。</div><div class="line"></div><div class="line">SET需要一个key来实现搜索。要求搜索的是词，但不能直接以string作为key，因为还要考虑到最短路径的实现。因此，用一个自定义结构：实现Comparable接口时比较的是词的字母顺序，另外由于词的多义性用一个ArrayList存放出现在wordnet中的可能位置。</div></pre></td></tr></table></figure>
-<p>private class Node implements Comparable<node> {<br>        private ArrayList<integer> ids;<br>        private String noun;<br>        Node(String noun) {<br>            this.noun = noun;<br>            this.ids = new ArrayList&lt;&gt;();<br>        }</integer></node></p>
-<pre><code>    private void addId(int id) {
-        this.ids.add(id);
-    }
-
-    private ArrayList&lt;Integer&gt; getIds() {
-        return this.ids;
-    }
-
-    @Override
-    public int compareTo(Node o) {
-        return this.noun.compareTo(o.noun);
-    }
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">成员变量：</div></pre></td></tr></table></figure>
-<p>private SAP wordnetSap;<br>    private Digraph digraph;<br>    private boolean hasCycle;<br>    private boolean[] onStack;<br>    private boolean[] marked;<br>    private ArrayList<integer> possibleRoots; // a DAG has only one root<br>    private ArrayList<string[]> synsets; // synsets for each wordnet node<br>    private SET<node> allNouns; // SET to store Node<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">构造方法：读取synsets.txt和hypernyms.txt,构建表示wordnet的图。Node表示词以及词可能出现的位置，建立SET。与sap中不同，共同祖先需要根据序号返回同义词组，与SET的思路不一致，因此还需要一个ArrayList来表示每个序号对应的同义词组。</div><div class="line"></div><div class="line">根据题目要求，还需要检查构建的wordnet图是否合法，即检查是否无环、是否只有一个root。这个检查合法性同样用广度优先搜索可以完成：</div><div class="line"></div><div class="line">* 是否无环：搜索时如果之前访问过某节点，则构成环。</div><div class="line">* 是否只有一个root：无论从哪个节点开始搜索，最后一个节点（没有指向其他节点的边）是唯一的。</div></pre></td></tr></table></figure></node></string[]></integer></p>
-<p>public WordNet(String synsets, String hypernyms) {<br>        if (synsets == null || hypernyms == null)<br>            throw new NullPointerException();<br>        possibleRoots = new ArrayList&lt;&gt;();<br>        this.synsets = new ArrayList&lt;&gt;();<br>        allNouns = new SET<node>();<br>        int count = 0;<br>        try {<br>            BufferedReader in = new BufferedReader(new FileReader(synsets));<br>            String line;<br>            while ((line = in.readLine()) != null) {<br>                String[] parts = line.split(“,”);<br>                String aSynset = parts[1];<br>                String[] strings = aSynset.split(“ “);<br>                for (String str : strings) {<br>                    Node node = new Node(str);<br>                    if (this.allNouns.contains(node)) {<br>                        this.allNouns.ceiling(node).addId(Integer.parseInt(parts[0]));<br>                    }else {<br>                        node.addId(Integer.parseInt(parts[0]));<br>                        this.allNouns.add(node);<br>                    }<br>                }<br>                this.synsets.add(strings);</node></p>
-<pre><code>            count++;
-        }
-        in.close();
-
-        this.digraph = new Digraph(count);
-
-        BufferedReader hypernymsReader = new BufferedReader(new FileReader(hypernyms));
-        while ((line = hypernymsReader.readLine()) != null){
-            String[] temp = line.split(&quot;,&quot;);
-            int id = Integer.parseInt(temp[0]);
-            for (int i = 1; i &lt; temp.length; i++) {
-                this.digraph.addEdge(id, Integer.parseInt(temp[i]));
-            }
-        }
-        hypernymsReader.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-
-    this.wordnetSap = new SAP(this.digraph);
-
-    onStack = new boolean[digraph.V()];
-    marked = new boolean[digraph.V()];
-    if (hasCycle(this.digraph)) throw new IllegalArgumentException();
-    if (this.possibleRoots.size() &gt; 1) throw new IllegalArgumentException();
-}
-
-private boolean hasCycle(Digraph digraph) {
-    for (int i = 0; i &lt; digraph.V(); i++) {
-        if (!this.marked[i]) dfs(digraph, i);
-    }
-    return hasCycle;
-}
-
-private void dfs(Digraph digraph, int v) {
-
-    onStack[v] = true;
-    marked[v] = true;
-
-    if (!digraph.adj(v).iterator().hasNext()) {
-        if (!this.possibleRoots.contains(v))
-            this.possibleRoots.add(v);
-    }
-    for (int w : digraph.adj(v)) {
-        if (this.hasCycle) return;
-        else if (!marked[w]) {
-            dfs(digraph, w);
-        }
-        else if (onStack[w]) this.hasCycle = true;
-    }
-    onStack[v] = false;
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">选对了合适的数据结构，完成了构造方法，其实就完成了绝大部分工作，剩下的实现就相对容易了。</div><div class="line"></div><div class="line">返回wordnet中所有的词：</div></pre></td></tr></table></figure>
-<p>public Iterable<string> nouns() {<br>        ArrayList<string> nouns = new ArrayList&lt;&gt;();<br>        for (Node node : this.allNouns) {<br>            nouns.add(node.noun);<br>        }<br>        return nouns;<br>    }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">判断一个词是否在wordnet中：</div></pre></td></tr></table></figure></string></string></p>
-<p>public boolean isNoun(String word) {<br>        if (word == null) throw new NullPointerException();<br>        Node node = new Node(word);<br>        return this.allNouns.contains(node);<br>    }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">两个词的最短距离：用SET和Node迅速找到词所对应的可能位置，用sap中的方法可以马上计算。</div></pre></td></tr></table></figure></p>
-<p>public int distance(String nounA, String nounB) {<br>        if (nounA == null || nounB == null)<br>            throw new NullPointerException();<br>        if (!isNoun(nounA) || !isNoun(nounB))<br>            throw new IllegalArgumentException();<br>        ArrayList<integer> idAs;<br>        ArrayList<integer> idBs;</integer></integer></p>
-<pre><code>    Node nodeA = new Node(nounA);
-    Node nodeB = new Node(nounB);
-    nodeA = this.allNouns.ceiling(nodeA);
-    nodeB = this.allNouns.ceiling(nodeB);
-    idAs = nodeA.getIds();
-    idBs = nodeB.getIds();
-
-    return wordnetSap.length(idAs, idBs);
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">两个词最短路径上的共同上位词的同义词集合：同样用sap中的方法找到位置，然后从事先存好的arraylist中获取同义词集合，拼接成给定的形式。</div></pre></td></tr></table></figure>
-<p>public String sap(String nounA, String nounB) {<br>        if (nounA == null || nounB == null)<br>            throw new NullPointerException();<br>        if (!isNoun(nounA) || !isNoun(nounB))<br>            throw new IllegalArgumentException();</p>
-<pre><code>    ArrayList&lt;Integer&gt; idAs;
-    ArrayList&lt;Integer&gt; idBs;
-
-    Node nodeA = new Node(nounA);
-    Node nodeB = new Node(nounB);
-    nodeA = this.allNouns.ceiling(nodeA);
-    nodeB = this.allNouns.ceiling(nodeB);
-    idAs = nodeA.getIds();
-    idBs = nodeB.getIds();
-
-    int id = wordnetSap.ancestor(idAs, idBs);
-    String[] strings = this.synsets.get(id);
-    String result = &quot;&quot;;
-    for (int i = 0; i&lt; strings.length; i++) {
-        result += strings[i];
-        if (i != strings.length - 1)
-            result += &quot; &quot;;
-    }
-    return result;
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">## Outcast.java</div><div class="line"></div><div class="line">outcast就简单了，从给定的词组中，计算每个词与其他词的最短距离之和。和最大的词自然就是与别的词最不同的了。</div></pre></td></tr></table></figure>
-<p>public class Outcast {<br>    private WordNet wordNet;</p>
-<pre><code>public Outcast(WordNet wordnet) {
-    this.wordNet = wordnet;
-}
-
-public String outcast(String[] nouns) {
-    int[] distances = new int[nouns.length];
-    for (int i = 0; i &lt; nouns.length; i++) {
-        String noun = nouns[i];
-        for (int j = 0; j &lt; nouns.length; j++) {
-            if (i != j) {
-                distances[i] += wordNet.distance(noun, nouns[j]);
-            }
-        }
-    }
-    int max = 0;
-    int id = 0;
-    for (int i = 0; i &lt; distances.length; i++) {
-        if (distances[i] &gt; max) {
-            max = distances[i];
-            id = i;
-        }
-    }
-
-    return nouns[id];
-}
-</code></pre><p>}<br>```</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>笔者水平有限，上述答案其实只有91分，运行时间不达标。抛砖引玉，希望大神们能够提出改进方法，大家一起学习进步，谢谢！</p>
-<p>项目源码在GitHub中，请点<a href="https://github.com/michael0905/WordNet" target="_blank" rel="external">这里</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/28/wordnet/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-seamcarving" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/28/seamcarving/">SeamCarving</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/28/seamcarving/" class="archive-article-date">
-  	<time datetime="2017-03-28T07:56:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><p>第二周主要内容仍然是关于图的算法，主要内容为：</p>
-<ul>
-<li><p>最小生成树</p>
+<a id="more"></a>
+<p>词向量经典例子：<img src="http://latex.codecogs.com/png.latex?\vec{man}-\vec{woman}\approx\vec{king}-\vec{queen}" alt=""></p>
+<p><a href="https://radimrehurek.com/gensim/" target="_blank" rel="external">gensim</a>已经用python封装好了word2vec的实现，有语料的话可以直接训练了，参考<a href="http://www.52nlp.cn/%E4%B8%AD%E8%8B%B1%E6%96%87%E7%BB%B4%E5%9F%BA%E7%99%BE%E7%A7%91%E8%AF%AD%E6%96%99%E4%B8%8A%E7%9A%84word2vec%E5%AE%9E%E9%AA%8C" target="_blank" rel="external">中英文维基百科语料上的Word2Vec实验
+</a></p>
+<p>会使用gensim训练词向量，并不表示真的掌握了word2vec，只表示会读文档会调接口而已。</p>
+<h2 id="Word2vec详细实现"><a href="#Word2vec详细实现" class="headerlink" title="Word2vec详细实现"></a>Word2vec详细实现</h2><p>word2vec的详细实现，简而言之，就是一个三层的神经网络。要理解word2vec的实现，需要的预备知识是神经网络和Logistic Regression。</p>
+<h3 id="神经网络结构"><a href="#神经网络结构" class="headerlink" title="神经网络结构"></a>神经网络结构</h3><p><img src="http://upload-images.jianshu.io/upload_images/1972331-89bef43bf853c91b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="word2vec原理图"></p>
+<p>上图是Word2vec的简要流程图。首先假设，词库里的词数为10000; 词向量的长度为300（根据<a href="https://www.youtube.com/playlist?list=PLlJy-eBtNFt4CSVWYqscHDdP58M3zFHIG" target="_blank" rel="external">斯坦福CS224d</a>的讲解，词向量一般为25-1000维，300维是一个好的选择）。下面以单个训练样本为例，依次介绍每个部分的含义。</p>
 <ol>
-<li><a href="http://algs4.cs.princeton.edu/43mst/KruskalMST.java.html">Kruskal算法</a></li>
+<li>输入层：输入为一个词的one-hot向量表示。这个向量长度为10000。假设这个词为ants，ants在词库中的ID为i，则输入向量的第i个分量为1，其余为0。<figure class="highlight plain"><figcaption><span>0, ..., 0, 0, 1, 0, 0, ..., 0, 0]```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">2. 隐藏层：隐藏层的神经元个数就是词向量的长度。隐藏层的参数是一个[10000 ，300]的矩阵。 ***实际上，这个参数矩阵就是词向量。***回忆一下矩阵相乘，一个one-hot行向量和矩阵相乘，结果就是矩阵的第i行。经过隐藏层，实际上就是把10000维的one-hot向量映射成了最终想要得到的300维的词向量。</div><div class="line">![矩阵乘法](http://upload-images.jianshu.io/upload_images/1972331-76065809e654bde0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620)</div><div class="line">3. 输出层: 输出层的神经元个数为总词数10000，参数矩阵尺寸为[300，10000]。词向量经过矩阵计算后再加上softmax归一化，重新变为10000维的向量，每一维对应词库中的一个词与输入的词（在这里是ants）共同出现在上下文中的概率。</div><div class="line">![输出层](http://upload-images.jianshu.io/upload_images/1972331-b4fcfe005818b934.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620)</div><div class="line">上图中计算了car与ants共现的概率，car所对应的300维列向量就是输出层参数矩阵中的一列。输出层的参数矩阵是[300，10000]，也就是计算了词库中所有词与ants共现的概率。输出层的参数矩阵在训练完毕后没有作用。</div><div class="line">4. 训练：训练样本（x, y）有输入也有输出，我们知道哪个词实际上跟ants共现，因此y也是一个10000维的向量。损失函数跟Logistic Regression相似，是神经网络的最终输出向量和y的交叉熵（cross-entropy）。最后用随机梯度下降来求解。</div><div class="line">![交叉熵（cross-entropy）](http://upload-images.jianshu.io/upload_images/1972331-6c6a33b1437ebdf2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</div><div class="line"></div><div class="line">上述步骤是一个词作为输入和一个上下文中的词作为输出的情况，但实际情况显然更复杂，什么是上下文呢？用一个词去预测周围的其他词，还是用周围的好多词来预测一个词？这里就要引入实际训练时的两个模型skip-gram和CBOW。</div><div class="line"></div><div class="line">### skip-gram和CBOW</div><div class="line">* skip-gram： 核心思想是根据中心词来预测周围的词。假设中心词是cat，窗口长度为2，则根据cat预测左边两个词和右边两个词。这时，cat作为神经网络的input，预测的词作为label。下图为一个例子：</div><div class="line">![skip-gram](http://upload-images.jianshu.io/upload_images/1972331-ed56bc91fab3b3f3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620) 在这里窗口长度为2，中心词一个一个移动，遍历所有文本。每一次中心词的移动，最多会产生4对训练样本（input，label）。</div><div class="line"></div><div class="line">* CBOW（continuous-bag-of-words）：如果理解了skip-gram，那CBOW模型其实就是倒过来，用周围的所有词来预测中心词。这时候，每一次中心词的移动，只能产生一个训练样本。如果还是用上面的例子，则CBOW模型会产生下列4个训练样本：</div><div class="line">  1. ([quick, brown], the)</div><div class="line">  2. ([the, brown, fox], quick)</div><div class="line">  3. ([the, quick, fox, jumps], brown)</div><div class="line">  4. ([quick, brown, jumps, over], fox)</div><div class="line"></div><div class="line">  这时候，input很可能是4个词，label只是一个词，怎么办呢？其实很简单，只要求平均就行了。经过隐藏层后，输入的4个词被映射成了4个300维的向量，对这4个向量求平均，然后就可以作为下一层的输入了。</div><div class="line"></div><div class="line">两个模型相比，skip-gram模型能产生更多训练样本，抓住更多词与词之间语义上的细节，在语料足够多足够好的理想条件下，skip-gram模型是优于CBOW模型的。在语料较少的情况下，难以抓住足够多词与词之间的细节，CBOW模型求平均的特性，反而效果可能更好。</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">### 负采样（Negative Sampling）</div><div class="line">实际训练时，还是假设词库有10000个词，词向量300维，那么每一层神经网络的参数是300万个，输出层相当于有一万个可能类的多分类问题。可以想象，这样的计算量非常非常非常大。</div><div class="line">作者Mikolov等人提出了许多优化的方法，在这里着重讲一下负采样。</div><div class="line">负采样的思想非常简单，简单地令人发指：我们知道最终神经网络经过softmax输出的是一个one-hot向量，只有一个1，其余的0称为negative sample。**现在只选择5个negative sample，所以输出向量就只是一个6维的向量。要考虑的参数不是300万个，而减少到了1800个！** 这样做看上去很偷懒，实际效果却很好，大大提升了运算效率。</div><div class="line">我们知道，训练神经网络时，每一次训练会对神经网络的参数进行微小的修改。在word2vec中，每一个训练样本并不会对所有参数进行修改。假设输入的词是cat，我们的隐藏层参数有300万个，**但这一步训练只会修改cat相对应的300个参数，因为此时隐藏层的输出只跟这300个参数有关！**</div><div class="line">负采样是有效的，我们不需要那么多negative sample。Mikolov等人在论文中说：对于小数据集，负采样的个数在5-20个；对于大数据集，负采样的个数在2-5个。</div><div class="line"></div><div class="line">那具体如何选择负采样的词呢？论文给出了如下公式：</div><div class="line">![负采样的选择](http://upload-images.jianshu.io/upload_images/1972331-4c5e62f2c9e79c1f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310) 其中f(w)是词频。可以看到，负采样的选择只跟词频有关，词频越大，越有可能选中。</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">## Tensorflow实现</div><div class="line">最后用tensorflow动手实践一下。参考[Udacity Deep Learning的一次作业](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/5_word2vec.ipynb)</div><div class="line"></div><div class="line">这里只是训练了128维的词向量，并通过[TSNE](http://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html)的方法可视化。作为练手和深入理解word2vec不错，实战还是推荐gensim。</div><div class="line"></div><div class="line"></div><div class="line">```python</div><div class="line"># These are all the modules we&apos;ll be using later. Make sure you can import them</div><div class="line"># before proceeding further.</div><div class="line">%matplotlib inline</div><div class="line">from __future__ import print_function</div><div class="line">import collections</div><div class="line">import math</div><div class="line">import numpy as np</div><div class="line">import os</div><div class="line">import random</div><div class="line">import tensorflow as tf</div><div class="line">import zipfile</div><div class="line">from matplotlib import pylab</div><div class="line">from six.moves import range</div><div class="line">from six.moves.urllib.request import urlretrieve</div><div class="line">from sklearn.manifold import TSNE</div></pre></td></tr></table></figure></li>
 </ol>
-<ul>
-<li><a href="http://algs4.cs.princeton.edu/43mst/LazyPrimMST.java.html">延时Prim算法</a></li>
-<li><a href="http://algs4.cs.princeton.edu/43mst/PrimMST.java.html">即时Prim算法</a></li>
-</ul>
-</li>
-<li><p>最短路径</p>
-<ol>
-<li><a href="http://algs4.cs.princeton.edu/44sp/DijkstraSP.java.html">Dijkstra算法</a>：适用无负权值边的图</li>
-<li><a href="http://algs4.cs.princeton.edu/44sp/AcyclicSP.java.html">DAG最短路径算法</a>：使用拓扑排序</li>
-<li><a href="http://algs4.cs.princeton.edu/44sp/BellmanFordSP.java.html">Bellman-Ford算法</a>：适用含负权值边的图</li>
+<p>Download the data from the source website if necessary.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">url = <span class="string">'http://mattmahoney.net/dc/'</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">maybe_download</span><span class="params">(filename, expected_bytes)</span>:</span></div><div class="line">  <span class="string">"""Download a file if not present, and make sure it's the right size."""</span></div><div class="line">  <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(filename):</div><div class="line">    filename, _ = urlretrieve(url + filename, filename)</div><div class="line">  statinfo = os.stat(filename)</div><div class="line">  <span class="keyword">if</span> statinfo.st_size == expected_bytes:</div><div class="line">    print(<span class="string">'Found and verified %s'</span> % filename)</div><div class="line">  <span class="keyword">else</span>:</div><div class="line">    print(statinfo.st_size)</div><div class="line">    <span class="keyword">raise</span> Exception(</div><div class="line">      <span class="string">'Failed to verify '</span> + filename + <span class="string">'. Can you get to it with a browser?'</span>)</div><div class="line">  <span class="keyword">return</span> filename</div><div class="line"></div><div class="line">filename = maybe_download(<span class="string">'text8.zip'</span>, <span class="number">31344016</span>)</div></pre></td></tr></table></figure>
+<pre><code>Found and verified text8.zip
+</code></pre><p>Read the data into a string.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_data</span><span class="params">(filename)</span>:</span></div><div class="line">  <span class="string">"""Extract the first file enclosed in a zip file as a list of words"""</span></div><div class="line">  <span class="keyword">with</span> zipfile.ZipFile(filename) <span class="keyword">as</span> f:</div><div class="line">    data = tf.compat.as_str(f.read(f.namelist()[<span class="number">0</span>])).split()</div><div class="line">  <span class="keyword">return</span> data</div><div class="line"></div><div class="line">words = read_data(filename)</div><div class="line">print(<span class="string">'Data size %d'</span> % len(words))</div></pre></td></tr></table></figure>
+<pre><code>Data size 17005207
+</code></pre><p>Build the dictionary and replace rare words with UNK token.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">vocabulary_size = <span class="number">50000</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_dataset</span><span class="params">(words)</span>:</span></div><div class="line">  count = [[<span class="string">'UNK'</span>, <span class="number">-1</span>]]</div><div class="line">  count.extend(collections.Counter(words).most_common(vocabulary_size - <span class="number">1</span>))</div><div class="line">  dictionary = dict()</div><div class="line">  <span class="keyword">for</span> word, _ <span class="keyword">in</span> count:</div><div class="line">    dictionary[word] = len(dictionary)</div><div class="line">  data = list()</div><div class="line">  unk_count = <span class="number">0</span></div><div class="line">  <span class="keyword">for</span> word <span class="keyword">in</span> words:</div><div class="line">    <span class="keyword">if</span> word <span class="keyword">in</span> dictionary:</div><div class="line">      index = dictionary[word]</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">      index = <span class="number">0</span>  <span class="comment"># dictionary['UNK']</span></div><div class="line">      unk_count = unk_count + <span class="number">1</span></div><div class="line">    data.append(index)</div><div class="line">  count[<span class="number">0</span>][<span class="number">1</span>] = unk_count</div><div class="line">  reverse_dictionary = dict(zip(dictionary.values(), dictionary.keys()))</div><div class="line">  <span class="keyword">return</span> data, count, dictionary, reverse_dictionary</div><div class="line"></div><div class="line">data, count, dictionary, reverse_dictionary = build_dataset(words)</div><div class="line">print(<span class="string">'Most common words (+UNK)'</span>, count[:<span class="number">5</span>])</div><div class="line">print(<span class="string">'Sample data'</span>, data[:<span class="number">10</span>])</div><div class="line"><span class="keyword">del</span> words  <span class="comment"># Hint to reduce memory.</span></div></pre></td></tr></table></figure>
+<pre><code>Most common words (+UNK) [[&apos;UNK&apos;, 418391], (&apos;the&apos;, 1061396), (&apos;of&apos;, 593677), (&apos;and&apos;, 416629), (&apos;one&apos;, 411764)]
+Sample data [5239, 3084, 12, 6, 195, 2, 3137, 46, 59, 156]
+</code></pre><p>Function to generate a training batch for the skip-gram model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">data_index = <span class="number">0</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_batch</span><span class="params">(batch_size, num_skips, skip_window)</span>:</span></div><div class="line">    <span class="keyword">global</span> data_index</div><div class="line">    <span class="keyword">assert</span> batch_size % num_skips == <span class="number">0</span></div><div class="line">    <span class="keyword">assert</span> num_skips &lt;= <span class="number">2</span> * skip_window</div><div class="line">    batch = np.ndarray(shape=(batch_size), dtype=np.int32)</div><div class="line">    labels = np.ndarray(shape=(batch_size, <span class="number">1</span>), dtype=np.int32)</div><div class="line">    span = <span class="number">2</span> * skip_window + <span class="number">1</span> <span class="comment"># [ skip_window target skip_window ]</span></div><div class="line">    buffer = collections.deque(maxlen=span)</div><div class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(span):</div><div class="line">        buffer.append(data[data_index])</div><div class="line">        data_index = (data_index + <span class="number">1</span>) % len(data)</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(batch_size // num_skips):</div><div class="line">        target = skip_window  <span class="comment"># target label at the center of the buffer</span></div><div class="line">        targets_to_avoid = [ skip_window ]</div><div class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(num_skips):</div><div class="line">            <span class="keyword">while</span> target <span class="keyword">in</span> targets_to_avoid:</div><div class="line">                target = random.randint(<span class="number">0</span>, span - <span class="number">1</span>)</div><div class="line">            targets_to_avoid.append(target)</div><div class="line">            batch[i * num_skips + j] = buffer[skip_window]</div><div class="line">            labels[i * num_skips + j, <span class="number">0</span>] = buffer[target]</div><div class="line">        buffer.append(data[data_index])</div><div class="line">        data_index = (data_index + <span class="number">1</span>) % len(data)</div><div class="line">    <span class="keyword">return</span> batch, labels</div><div class="line"></div><div class="line">print(<span class="string">'data:'</span>, [reverse_dictionary[di] <span class="keyword">for</span> di <span class="keyword">in</span> data[:<span class="number">8</span>]])</div><div class="line"></div><div class="line"><span class="keyword">for</span> num_skips, skip_window <span class="keyword">in</span> [(<span class="number">2</span>, <span class="number">1</span>), (<span class="number">4</span>, <span class="number">2</span>)]:</div><div class="line">    data_index = <span class="number">0</span></div><div class="line">    batch, labels = generate_batch(batch_size=<span class="number">8</span>, num_skips=num_skips, skip_window=skip_window)</div><div class="line">    print(<span class="string">'\nwith num_skips = %d and skip_window = %d:'</span> % (num_skips, skip_window))</div><div class="line">    print(<span class="string">'    batch:'</span>, [reverse_dictionary[bi] <span class="keyword">for</span> bi <span class="keyword">in</span> batch])</div><div class="line">    print(<span class="string">'    labels:'</span>, [reverse_dictionary[li] <span class="keyword">for</span> li <span class="keyword">in</span> labels.reshape(<span class="number">8</span>)])</div></pre></td></tr></table></figure>
+<pre><code>data: [&apos;anarchism&apos;, &apos;originated&apos;, &apos;as&apos;, &apos;a&apos;, &apos;term&apos;, &apos;of&apos;, &apos;abuse&apos;, &apos;first&apos;]
+
+with num_skips = 2 and skip_window = 1:
+    batch: [&apos;originated&apos;, &apos;originated&apos;, &apos;as&apos;, &apos;as&apos;, &apos;a&apos;, &apos;a&apos;, &apos;term&apos;, &apos;term&apos;]
+    labels: [&apos;anarchism&apos;, &apos;as&apos;, &apos;originated&apos;, &apos;a&apos;, &apos;as&apos;, &apos;term&apos;, &apos;a&apos;, &apos;of&apos;]
+
+with num_skips = 4 and skip_window = 2:
+    batch: [&apos;as&apos;, &apos;as&apos;, &apos;as&apos;, &apos;as&apos;, &apos;a&apos;, &apos;a&apos;, &apos;a&apos;, &apos;a&apos;]
+    labels: [&apos;originated&apos;, &apos;term&apos;, &apos;anarchism&apos;, &apos;a&apos;, &apos;of&apos;, &apos;as&apos;, &apos;originated&apos;, &apos;term&apos;]
+</code></pre><h2 id="Skip-Gram"><a href="#Skip-Gram" class="headerlink" title="Skip-Gram"></a>Skip-Gram</h2><p>Train a skip-gram model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">batch_size = <span class="number">128</span></div><div class="line">embedding_size = <span class="number">128</span> <span class="comment"># Dimension of the embedding vector.</span></div><div class="line">skip_window = <span class="number">1</span> <span class="comment"># How many words to consider left and right.</span></div><div class="line">num_skips = <span class="number">2</span> <span class="comment"># How many times to reuse an input to generate a label.</span></div><div class="line"><span class="comment"># We pick a random validation set to sample nearest neighbors. here we limit the</span></div><div class="line"><span class="comment"># validation samples to the words that have a low numeric ID, which by</span></div><div class="line"><span class="comment"># construction are also the most frequent.</span></div><div class="line">valid_size = <span class="number">16</span> <span class="comment"># Random set of words to evaluate similarity on.</span></div><div class="line">valid_window = <span class="number">100</span> <span class="comment"># Only pick dev samples in the head of the distribution.</span></div><div class="line">valid_examples = np.array(random.sample(range(valid_window), valid_size))</div><div class="line"></div><div class="line"><span class="comment">#######important#########</span></div><div class="line">num_sampled = <span class="number">64</span> <span class="comment"># Number of negative examples to sample.</span></div><div class="line"></div><div class="line">graph = tf.Graph()</div><div class="line"></div><div class="line"><span class="keyword">with</span> graph.as_default(), tf.device(<span class="string">'/cpu:0'</span>):</div><div class="line"></div><div class="line">  <span class="comment"># Input data.</span></div><div class="line">  train_dataset = tf.placeholder(tf.int32, shape=[batch_size])</div><div class="line">  train_labels = tf.placeholder(tf.int32, shape=[batch_size, <span class="number">1</span>])</div><div class="line">  valid_dataset = tf.constant(valid_examples, dtype=tf.int32)</div><div class="line"></div><div class="line">  <span class="comment"># Variables.</span></div><div class="line">  embeddings = tf.Variable(</div><div class="line">    tf.random_uniform([vocabulary_size, embedding_size], <span class="number">-1.0</span>, <span class="number">1.0</span>))</div><div class="line">  softmax_weights = tf.Variable(</div><div class="line">    tf.truncated_normal([vocabulary_size, embedding_size],</div><div class="line">                         stddev=<span class="number">1.0</span> / math.sqrt(embedding_size)))</div><div class="line">  softmax_biases = tf.Variable(tf.zeros([vocabulary_size]))</div><div class="line"></div><div class="line">  <span class="comment"># Model.</span></div><div class="line">  <span class="comment"># Look up embeddings for inputs.</span></div><div class="line">  embed = tf.nn.embedding_lookup(embeddings, train_dataset)</div><div class="line">  <span class="comment"># Compute the softmax loss, using a sample of the negative labels each time.</span></div><div class="line">  loss = tf.reduce_mean(</div><div class="line">    tf.nn.sampled_softmax_loss(weights=softmax_weights, biases=softmax_biases, inputs=embed,</div><div class="line">                               labels=train_labels, num_sampled=num_sampled, num_classes=vocabulary_size))</div><div class="line"></div><div class="line">  <span class="comment"># Optimizer.</span></div><div class="line">  <span class="comment"># Note: The optimizer will optimize the softmax_weights AND the embeddings.</span></div><div class="line">  <span class="comment"># This is because the embeddings are defined as a variable quantity and the</span></div><div class="line">  <span class="comment"># optimizer's `minimize` method will by default modify all variable quantities</span></div><div class="line">  <span class="comment"># that contribute to the tensor it is passed.</span></div><div class="line">  <span class="comment"># See docs on `tf.train.Optimizer.minimize()` for more details.</span></div><div class="line">  optimizer = tf.train.AdagradOptimizer(<span class="number">1.0</span>).minimize(loss)</div><div class="line"></div><div class="line">  <span class="comment"># Compute the similarity between minibatch examples and all embeddings.</span></div><div class="line">  <span class="comment"># We use the cosine distance:</span></div><div class="line">  norm = tf.sqrt(tf.reduce_sum(tf.square(embeddings), <span class="number">1</span>, keep_dims=<span class="keyword">True</span>))</div><div class="line">  normalized_embeddings = embeddings / norm</div><div class="line">  valid_embeddings = tf.nn.embedding_lookup(</div><div class="line">    normalized_embeddings, valid_dataset)</div><div class="line">  similarity = tf.matmul(valid_embeddings, tf.transpose(normalized_embeddings))</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">num_steps = <span class="number">100001</span></div><div class="line"></div><div class="line"><span class="keyword">with</span> tf.Session(graph=graph) <span class="keyword">as</span> session:</div><div class="line">  tf.global_variables_initializer().run()</div><div class="line">  print(<span class="string">'Initialized'</span>)</div><div class="line">  average_loss = <span class="number">0</span></div><div class="line">  <span class="keyword">for</span> step <span class="keyword">in</span> range(num_steps):</div><div class="line">    batch_data, batch_labels = generate_batch(</div><div class="line">      batch_size, num_skips, skip_window)</div><div class="line">    feed_dict = &#123;train_dataset : batch_data, train_labels : batch_labels&#125;</div><div class="line">    _, l = session.run([optimizer, loss], feed_dict=feed_dict)</div><div class="line">    average_loss += l</div><div class="line">    <span class="keyword">if</span> step % <span class="number">2000</span> == <span class="number">0</span>:</div><div class="line">      <span class="keyword">if</span> step &gt; <span class="number">0</span>:</div><div class="line">        average_loss = average_loss / <span class="number">2000</span></div><div class="line">      <span class="comment"># The average loss is an estimate of the loss over the last 2000 batches.</span></div><div class="line">      print(<span class="string">'Average loss at step %d: %f'</span> % (step, average_loss))</div><div class="line">      average_loss = <span class="number">0</span></div><div class="line">    <span class="comment"># note that this is expensive (~20% slowdown if computed every 500 steps)</span></div><div class="line">    <span class="keyword">if</span> step % <span class="number">10000</span> == <span class="number">0</span>:</div><div class="line">      sim = similarity.eval()</div><div class="line">      <span class="keyword">for</span> i <span class="keyword">in</span> range(valid_size):</div><div class="line">        valid_word = reverse_dictionary[valid_examples[i]]</div><div class="line">        top_k = <span class="number">8</span> <span class="comment"># number of nearest neighbors</span></div><div class="line">        nearest = (-sim[i, :]).argsort()[<span class="number">1</span>:top_k+<span class="number">1</span>]</div><div class="line">        log = <span class="string">'Nearest to %s:'</span> % valid_word</div><div class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> range(top_k):</div><div class="line">          close_word = reverse_dictionary[nearest[k]]</div><div class="line">          log = <span class="string">'%s %s,'</span> % (log, close_word)</div><div class="line">        print(log)</div><div class="line">  final_embeddings = normalized_embeddings.eval()</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">num_points = <span class="number">400</span></div><div class="line"></div><div class="line">tsne = TSNE(perplexity=<span class="number">30</span>, n_components=<span class="number">2</span>, init=<span class="string">'pca'</span>, n_iter=<span class="number">5000</span>)</div><div class="line">two_d_embeddings = tsne.fit_transform(final_embeddings[<span class="number">1</span>:num_points+<span class="number">1</span>, :])</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot</span><span class="params">(embeddings, labels)</span>:</span></div><div class="line">  <span class="keyword">assert</span> embeddings.shape[<span class="number">0</span>] &gt;= len(labels), <span class="string">'More labels than embeddings'</span></div><div class="line">  pylab.figure(figsize=(<span class="number">15</span>,<span class="number">15</span>))  <span class="comment"># in inches</span></div><div class="line">  <span class="keyword">for</span> i, label <span class="keyword">in</span> enumerate(labels):</div><div class="line">    x, y = embeddings[i,:]</div><div class="line">    pylab.scatter(x, y)</div><div class="line">    pylab.annotate(label, xy=(x, y), xytext=(<span class="number">5</span>, <span class="number">2</span>), textcoords=<span class="string">'offset points'</span>,</div><div class="line">                   ha=<span class="string">'right'</span>, va=<span class="string">'bottom'</span>)</div><div class="line">  pylab.show()</div><div class="line"></div><div class="line">words = [reverse_dictionary[i] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, num_points+<span class="number">1</span>)]</div><div class="line">plot(two_d_embeddings, words)</div></pre></td></tr></table></figure>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-b91517d5c00d3167.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620" alt="skip-gram可视化"></p>
+<hr>
+<h2 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h2><hr>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">data_index_cbow = <span class="number">0</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_cbow_batch</span><span class="params">(batch_size, num_skips, skip_window)</span>:</span></div><div class="line">    <span class="keyword">global</span> data_index_cbow</div><div class="line">    <span class="keyword">assert</span> batch_size % num_skips == <span class="number">0</span></div><div class="line">    <span class="keyword">assert</span> num_skips &lt;= <span class="number">2</span> * skip_window</div><div class="line">    batch = np.ndarray(shape=(batch_size), dtype=np.int32)</div><div class="line">    labels = np.ndarray(shape=(batch_size, <span class="number">1</span>), dtype=np.int32)</div><div class="line">    span = <span class="number">2</span> * skip_window + <span class="number">1</span> <span class="comment"># [ skip_window target skip_window ]</span></div><div class="line">    buffer = collections.deque(maxlen=span)</div><div class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(span):</div><div class="line">        buffer.append(data[data_index_cbow])</div><div class="line">        data_index_cbow = (data_index_cbow + <span class="number">1</span>) % len(data)</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(batch_size // num_skips):</div><div class="line">        target = skip_window  <span class="comment"># target label at the center of the buffer</span></div><div class="line">        targets_to_avoid = [ skip_window ]</div><div class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(num_skips):</div><div class="line">            <span class="keyword">while</span> target <span class="keyword">in</span> targets_to_avoid:</div><div class="line">                target = random.randint(<span class="number">0</span>, span - <span class="number">1</span>)</div><div class="line">            targets_to_avoid.append(target)</div><div class="line">            batch[i * num_skips + j] = buffer[skip_window]</div><div class="line">            labels[i * num_skips + j, <span class="number">0</span>] = buffer[target]</div><div class="line">        buffer.append(data[data_index_cbow])</div><div class="line">        data_index_cbow = (data_index_cbow + <span class="number">1</span>) % len(data)</div><div class="line">    cbow_batch = np.ndarray(shape=(batch_size), dtype=np.int32)</div><div class="line">    cbow_labels = np.ndarray(shape=(batch_size // (skip_window * <span class="number">2</span>), <span class="number">1</span>), dtype=np.int32)</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(batch_size):</div><div class="line">        cbow_batch[i] = labels[i]</div><div class="line">    cbow_batch = np.reshape(cbow_batch, [batch_size // (skip_window * <span class="number">2</span>), skip_window * <span class="number">2</span>])</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(batch_size // (skip_window * <span class="number">2</span>)):</div><div class="line">        <span class="comment"># center word</span></div><div class="line">        cbow_labels[i] = batch[<span class="number">2</span> * skip_window * i]</div><div class="line">    <span class="keyword">return</span> cbow_batch, cbow_labels</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># actual batch_size = batch_size // (2 * skip_window)</span></div><div class="line">batch_size = <span class="number">128</span></div><div class="line">embedding_size = <span class="number">128</span> <span class="comment"># Dimension of the embedding vector.</span></div><div class="line">skip_window = <span class="number">1</span> <span class="comment"># How many words to consider left and right.</span></div><div class="line">num_skips = <span class="number">2</span> <span class="comment"># How many times to reuse an input to generate a label.</span></div><div class="line"><span class="comment"># We pick a random validation set to sample nearest neighbors. here we limit the</span></div><div class="line"><span class="comment"># validation samples to the words that have a low numeric ID, which by</span></div><div class="line"><span class="comment"># construction are also the most frequent.</span></div><div class="line">valid_size = <span class="number">16</span> <span class="comment"># Random set of words to evaluate similarity on.</span></div><div class="line">valid_window = <span class="number">100</span> <span class="comment"># Only pick dev samples in the head of the distribution.</span></div><div class="line">valid_examples = np.array(random.sample(range(valid_window), valid_size))</div><div class="line"></div><div class="line"><span class="comment">#######important#########</span></div><div class="line">num_sampled = <span class="number">64</span> <span class="comment"># Number of negative examples to sample.</span></div><div class="line"></div><div class="line">graph = tf.Graph()</div><div class="line"></div><div class="line"><span class="keyword">with</span> graph.as_default(), tf.device(<span class="string">'/cpu:0'</span>):</div><div class="line"></div><div class="line">  <span class="comment"># Input data.</span></div><div class="line">    train_dataset = tf.placeholder(tf.int32, shape=[batch_size // (skip_window * <span class="number">2</span>), skip_window * <span class="number">2</span>])</div><div class="line">    train_labels = tf.placeholder(tf.int32, shape=[batch_size // (skip_window * <span class="number">2</span>), <span class="number">1</span>])</div><div class="line">    valid_dataset = tf.constant(valid_examples, dtype=tf.int32)</div><div class="line"></div><div class="line">  <span class="comment"># Variables.</span></div><div class="line">    embeddings = tf.Variable(</div><div class="line">      tf.random_uniform([vocabulary_size, embedding_size], <span class="number">-1.0</span>, <span class="number">1.0</span>))</div><div class="line">    softmax_weights = tf.Variable(</div><div class="line">      tf.truncated_normal([vocabulary_size, embedding_size],</div><div class="line">                         stddev=<span class="number">1.0</span> / math.sqrt(embedding_size)))</div><div class="line">    softmax_biases = tf.Variable(tf.zeros([vocabulary_size]))</div><div class="line"></div><div class="line">  <span class="comment"># Model.</span></div><div class="line">  <span class="comment"># Look up embeddings for inputs.</span></div><div class="line">    embed = tf.nn.embedding_lookup(embeddings, train_dataset)</div><div class="line"></div><div class="line">    <span class="comment"># reshape embed</span></div><div class="line">    embed = tf.reshape(embed, (skip_window * <span class="number">2</span>, batch_size // (skip_window * <span class="number">2</span>), embedding_size))</div><div class="line">    <span class="comment"># average embed</span></div><div class="line">    embed = tf.reduce_mean(embed, <span class="number">0</span>)</div><div class="line"></div><div class="line">  <span class="comment"># Compute the softmax loss, using a sample of the negative labels each time.</span></div><div class="line">    loss = tf.reduce_mean(</div><div class="line">      tf.nn.sampled_softmax_loss(weights=softmax_weights, biases=softmax_biases, inputs=embed,</div><div class="line">                               labels=train_labels, num_sampled=num_sampled, num_classes=vocabulary_size))</div><div class="line"></div><div class="line">  <span class="comment"># Optimizer.</span></div><div class="line">  <span class="comment"># Note: The optimizer will optimize the softmax_weights AND the embeddings.</span></div><div class="line">  <span class="comment"># This is because the embeddings are defined as a variable quantity and the</span></div><div class="line">  <span class="comment"># optimizer's `minimize` method will by default modify all variable quantities</span></div><div class="line">  <span class="comment"># that contribute to the tensor it is passed.</span></div><div class="line">  <span class="comment"># See docs on `tf.train.Optimizer.minimize()` for more details.</span></div><div class="line">    optimizer = tf.train.AdagradOptimizer(<span class="number">1.0</span>).minimize(loss)</div><div class="line"></div><div class="line">  <span class="comment"># Compute the similarity between minibatch examples and all embeddings.</span></div><div class="line">  <span class="comment"># We use the cosine distance:</span></div><div class="line">    norm = tf.sqrt(tf.reduce_sum(tf.square(embeddings), <span class="number">1</span>, keep_dims=<span class="keyword">True</span>))</div><div class="line">    normalized_embeddings = embeddings / norm</div><div class="line">    valid_embeddings = tf.nn.embedding_lookup(</div><div class="line">      normalized_embeddings, valid_dataset)</div><div class="line">    similarity = tf.matmul(valid_embeddings, tf.transpose(normalized_embeddings))</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">num_steps = <span class="number">100001</span></div><div class="line"></div><div class="line"><span class="keyword">with</span> tf.Session(graph=graph) <span class="keyword">as</span> session:</div><div class="line">  tf.global_variables_initializer().run()</div><div class="line">  print(<span class="string">'Initialized'</span>)</div><div class="line">  average_loss = <span class="number">0</span></div><div class="line">  <span class="keyword">for</span> step <span class="keyword">in</span> range(num_steps):</div><div class="line">    batch_data, batch_labels = get_cbow_batch(</div><div class="line">      batch_size, num_skips, skip_window)</div><div class="line">    feed_dict = &#123;train_dataset : batch_data, train_labels : batch_labels&#125;</div><div class="line">    _, l = session.run([optimizer, loss], feed_dict=feed_dict)</div><div class="line">    average_loss += l</div><div class="line">    <span class="keyword">if</span> step % <span class="number">2000</span> == <span class="number">0</span>:</div><div class="line">      <span class="keyword">if</span> step &gt; <span class="number">0</span>:</div><div class="line">        average_loss = average_loss / <span class="number">2000</span></div><div class="line">      <span class="comment"># The average loss is an estimate of the loss over the last 2000 batches.</span></div><div class="line">      print(<span class="string">'Average loss at step %d: %f'</span> % (step, average_loss))</div><div class="line">      average_loss = <span class="number">0</span></div><div class="line">    <span class="comment"># note that this is expensive (~20% slowdown if computed every 500 steps)</span></div><div class="line">    <span class="keyword">if</span> step % <span class="number">10000</span> == <span class="number">0</span>:</div><div class="line">      sim = similarity.eval()</div><div class="line">      <span class="keyword">for</span> i <span class="keyword">in</span> range(valid_size):</div><div class="line">        valid_word = reverse_dictionary[valid_examples[i]]</div><div class="line">        top_k = <span class="number">8</span> <span class="comment"># number of nearest neighbors</span></div><div class="line">        nearest = (-sim[i, :]).argsort()[<span class="number">1</span>:top_k+<span class="number">1</span>]</div><div class="line">        log = <span class="string">'Nearest to %s:'</span> % valid_word</div><div class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> range(top_k):</div><div class="line">          close_word = reverse_dictionary[nearest[k]]</div><div class="line">          log = <span class="string">'%s %s,'</span> % (log, close_word)</div><div class="line">        print(log)</div><div class="line">  final_embeddings = normalized_embeddings.eval()</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">num_points = <span class="number">400</span></div><div class="line"></div><div class="line">tsne = TSNE(perplexity=<span class="number">30</span>, n_components=<span class="number">2</span>, init=<span class="string">'pca'</span>, n_iter=<span class="number">5000</span>)</div><div class="line">two_d_embeddings = tsne.fit_transform(final_embeddings[<span class="number">1</span>:num_points+<span class="number">1</span>, :])</div><div class="line">words = [reverse_dictionary[i] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">200</span>, num_points+<span class="number">1</span>)]</div><div class="line">plot(two_d_embeddings, words)</div></pre></td></tr></table></figure>
+<p><img src="http://upload-images.jianshu.io/upload_images/1972331-9871fed79a1600b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CBOW可视化"></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
+<li><a href="http://proceedings.mlr.press/v32/le14.pdf" target="_blank" rel="external">Le Q V, Mikolov T. Distributed Representations of Sentences and Documents[J]. 2014, 4:II-1188.</a></li>
+<li><a href="https://arxiv.org/pdf/1310.4546.pdf" target="_blank" rel="external">Mikolov T, Sutskever I, Chen K, et al. Distributed Representations of Words and Phrases and their Compositionality[J]. Advances in Neural Information Processing Systems, 2013, 26:3111-3119.</a></li>
+<li><a href="http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/" target="_blank" rel="external">Word2Vec Tutorial - The Skip-Gram Model</a></li>
+<li><a href="https://classroom.udacity.com/courses/ud730" target="_blank" rel="external">Udacity Deep Learning</a></li>
+<li><a href="https://www.youtube.com/playlist?list=PLlJy-eBtNFt4CSVWYqscHDdP58M3zFHIG" target="_blank" rel="external">Stanford CS224d Lecture2,3</a></li>
 </ol>
-</li>
-</ul>
-<p>编程作业是SeamCarver：<a href="http://coursera.cs.princeton.edu/algs4/assignments/seamCarving.html">原题地址</a></p>
-        
-          <a class="article-more-a" href="/2017/03/28/seamcarving/#more">more >></a>
-        
+
       
 
       
@@ -1251,7 +250,7 @@ public String outcast(String[] nouns) {
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
         		</li>
       		
 		</ul>
@@ -1263,7 +262,7 @@ public String outcast(String[] nouns) {
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
+        			<a href="/categories/自然语言处理//" class="article-tag-list-link color2">自然语言处理</a>
         		</li>
       		
 		</ul>
@@ -1271,16 +270,84 @@ public String outcast(String[] nouns) {
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/28/seamcarving/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2017/06/27/word2vec/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/12/12/Tensorflow/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Tensorflow实践：用神经网络训练分类器
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/06/23/python根据BM25实现文本检索/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">python文本相似度计算</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -1300,8 +367,14 @@ public String outcast(String[] nouns) {
 
 
 
+  
+  
+  
 
   
+
+  
+
   
 
 
@@ -1324,8 +397,8 @@ public String outcast(String[] nouns) {
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
