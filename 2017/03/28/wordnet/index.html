@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/28/wordnet/index.html">
 <meta property="og:site_name" content="Yiyuan Liu's Blog">
 <meta property="og:description" content="最近在coursera上学习Princeton大学的Algorithm PartII，这个系列的两门课是我见过最好的算法课。主讲Robert Sedgewick师承高德纳，声名远播，虽然年纪大了，但是讲课思路清晰，深入浅出。与Kevin Wayne共同编著的《算法》第四版作为教材，没有《算法导论》那么偏理论、晦涩难懂，能够把常见的数据结构和算法讲得很透彻，容易理解。更值得称道的是这门课编程作业及其">
-<meta property="og:updated_time" content="2017-03-28T07:58:11.000Z">
+<meta property="og:updated_time" content="2017-12-12T07:52:30.050Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="WordNet">
 <meta name="twitter:description" content="最近在coursera上学习Princeton大学的Algorithm PartII，这个系列的两门课是我见过最好的算法课。主讲Robert Sedgewick师承高德纳，声名远播，虽然年纪大了，但是讲课思路清晰，深入浅出。与Kevin Wayne共同编著的《算法》第四版作为教材，没有《算法导论》那么偏理论、晦涩难懂，能够把常见的数据结构和算法讲得很透彻，容易理解。更值得称道的是这门课编程作业及其">
@@ -22,7 +22,7 @@
     <link rel="alternative" href="/atom.xml" title="Yiyuan Liu&#39;s Blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="/assets/img/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
   <style type="text/css">
@@ -52,6 +52,8 @@
 		  <h1 class="header-author"><a href="/">Yiyuan Liu</a></h1>
 		</hgroup>
 		
+		<p class="header-subtitle">Winter is coming</p>
+		
 
 		<nav class="header-menu">
 			<ul>
@@ -64,10 +66,6 @@
     		
     			
     			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
-    			
-            
-    			
-    			<a q-on="click: openSlider(e, 'friends')" href="javascript:void(0)">友链</a>
     			
             
     			
@@ -103,6 +101,8 @@
 			<hgroup>
 			  <h1 class="header-author js-header-author">Yiyuan Liu</h1>
 			</hgroup>
+			
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>Winter is coming<i class="icon icon-quo-right"></i></p>
 			
 			
 			
@@ -159,7 +159,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近在coursera上学习Princeton大学的Algorithm PartII，这个系列的两门课是我见过最好的算法课。主讲Robert Sedgewick师承高德纳，声名远播，虽然年纪大了，但是讲课思路清晰，深入浅出。与Kevin Wayne共同编著的《算法》第四版作为教材，没有《算法导论》那么偏理论、晦涩难懂，能够把常见的数据结构和算法讲得很透彻，容易理解。<br>更值得称道的是这门课编程作业及其评分系统。上课的内容是基础的数据结构和算法，但编程作业往往是这些算法的实际应用，能真正理解为什么在给定的情况下要使用这样的数据结构、算法。作业的评分不仅仅是看正确与否，还有运行时间、内存的要求，会给出详细的分析报告，如果不是ACM大神，这些作业都值得花时间去仔细琢磨。<br>下面进入正题，第一周的作业WordNet</p>
+        <p>最近在coursera上学习Princeton大学的Algorithm PartII，这个系列的两门课是我见过最好的算法课。主讲Robert Sedgewick师承高德纳，声名远播，虽然年纪大了，但是讲课思路清晰，深入浅出。与Kevin Wayne共同编著的《算法》第四版作为教材，没有《算法导论》那么偏理论、晦涩难懂，能够把常见的数据结构和算法讲得很透彻，容易理解。<br>更值得称道的是这门课编程作业及其评分系统。上课的内容是基础的数据结构和算法，但编程作业往往是这些算法的实际应用，能真正理解为什么在给定的情况下要使用这样的数据结构、算法。作业的评分不仅仅是看正确与否，还有运行时间、内存的要求，会给出详细的分析报告，如果不是ACM大神，这些作业都值得花时间去仔细琢磨。</p>
+<a id="more"></a>
+<p>下面进入正题，第一周的作业WordNet</p>
 <p>##题目<br>WordNet is a semantic lexicon for theEnglish language that is used extensively by computational linguistsand cognitive scientists; for example, it was a key component in IBM’sWatson.WordNet groups words into sets of synonyms called synsets and describes semantic relationships between them.One such relationship is the is-a relationship, which connects a hyponym(more specific synset) to a hypernym (more general synset).For example, locomotion is a hypernym of runningand running is a hypernym of dash.</p>
 <p>The WordNet digraph.Your first task is to build the wordnet digraph: each vertex v is an integer that represents a synset, and each directed edge v→w represents that w is a hypernym of v.The wordnet digraph is a rooted DAG: it is acylic and has one vertex thatis an ancestor of every other vertex.However, it is not necessarily a tree because a synset can have more than onehypernym. A small subgraph of the wordnet digraph is illustrated below.</p>
 <p>The WordNet input file formats.We now describe the two data files that you will use to create the wordnet digraph.The files are in CSV format: each line contains a sequence of fields,separated by commas.</p>
@@ -201,7 +203,7 @@
 <p>##SAP.java<br>下面具体分析每个类的实现<br>首先实现SAP.java，在这个类中实现计算最短距离和共同祖先的算法，然后可以应用到wordnet中。</p>
 <p>###分析<br>求最短路径和共同祖先的思想就是从两个不同节点出发，找到都能到达且距离最短的节点。要计算距离，使用广度优先搜索，并且保存和更新每个节点的到出发点的距离。</p>
 <p>成员变量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private Digraph digraph;</div><div class="line"></div><div class="line">private int ancestor;</div><div class="line">    </div><div class="line">private int length;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private Digraph digraph;</div><div class="line"></div><div class="line">private int ancestor;</div><div class="line"></div><div class="line">private int length;</div></pre></td></tr></table></figure>
 <p>构造方法：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public SAP(Digraph G) &#123;</div><div class="line">       if (G == null) throw new NullPointerException();</div><div class="line">       this.digraph = G;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
 <p>由于最短距离是两个节点到某公共节点的距离组合，可能出现多种情况，因此自定义一个数据结构Node来表示公共节点，把所有可能的公共节点放入一个优先队列中，最后从中取最小值。</p>
@@ -432,18 +434,18 @@ public String outcast(String[] nouns) {
     <div class="article-info article-info-index">
       
       
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
         		</li>
       		
 		</ul>
 	</div>
 
+      
 
       
 
@@ -626,25 +628,17 @@ MathJax.Hub.Queue(function() {
       
       
     
-      
-      
-      
-    
     
 
     <ul style="width: 70%">
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
-      
-        
-      
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
       
         
     </ul>
@@ -665,19 +659,19 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Android开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Android开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -727,38 +721,6 @@ MathJax.Hub.Queue(function() {
     	</section>
     
 
-    
-    	<section class="tools-section tools-section-friends" q-show="friends">
-  		
-        <ul class="search-ul">
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接1</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接2</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接3</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接4</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接5</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接6</a>
-            </li>
-          
-        </ul>
-  		
-    	</section>
     
 
     

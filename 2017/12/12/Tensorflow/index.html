@@ -8,28 +8,25 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Tensorflow实践：用神经网络训练分类器 | Yiyuan Liu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="任务：使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：
-原理：数据点一共有三个类别，而且是螺旋形交织在一起，显然是线性不可分的，需要一个非线性的分类器。这里选择神经网络。输入的数据点是二维的，因此每个点只有x,y坐标这个原始特征。这里设计的神经网络有两个隐藏层，每层有50个神经元，足够抓住数据点的高维特征（实际上每层10个都够用了）。最后输出层是一个逻辑回归，根据隐藏层计算出">
+  <meta name="description" content="任务：使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Tensorflow实践：用神经网络训练分类器">
 <meta property="og:url" content="http://yoursite.com/2017/12/12/Tensorflow/index.html">
 <meta property="og:site_name" content="Yiyuan Liu's Blog">
-<meta property="og:description" content="任务：使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：
-原理：数据点一共有三个类别，而且是螺旋形交织在一起，显然是线性不可分的，需要一个非线性的分类器。这里选择神经网络。输入的数据点是二维的，因此每个点只有x,y坐标这个原始特征。这里设计的神经网络有两个隐藏层，每层有50个神经元，足够抓住数据点的高维特征（实际上每层10个都够用了）。最后输出层是一个逻辑回归，根据隐藏层计算出">
+<meta property="og:description" content="任务：使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-342260dd468676cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-342260dd468676cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-cf38f01b02145209.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-12-12T07:49:23.837Z">
+<meta property="og:updated_time" content="2017-12-12T07:50:19.705Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tensorflow实践：用神经网络训练分类器">
-<meta name="twitter:description" content="任务：使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：
-原理：数据点一共有三个类别，而且是螺旋形交织在一起，显然是线性不可分的，需要一个非线性的分类器。这里选择神经网络。输入的数据点是二维的，因此每个点只有x,y坐标这个原始特征。这里设计的神经网络有两个隐藏层，每层有50个神经元，足够抓住数据点的高维特征（实际上每层10个都够用了）。最后输出层是一个逻辑回归，根据隐藏层计算出">
+<meta name="twitter:description" content="任务：使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1972331-342260dd468676cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="Yiyuan Liu&#39;s Blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="/assets/img/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
   <style type="text/css">
@@ -59,6 +56,8 @@
 		  <h1 class="header-author"><a href="/">Yiyuan Liu</a></h1>
 		</hgroup>
 		
+		<p class="header-subtitle">Winter is coming</p>
+		
 
 		<nav class="header-menu">
 			<ul>
@@ -71,10 +70,6 @@
     		
     			
     			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
-    			
-            
-    			
-    			<a q-on="click: openSlider(e, 'friends')" href="javascript:void(0)">友链</a>
     			
             
     			
@@ -110,6 +105,8 @@
 			<hgroup>
 			  <h1 class="header-author js-header-author">Yiyuan Liu</h1>
 			</hgroup>
+			
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>Winter is coming<i class="icon icon-quo-right"></i></p>
 			
 			
 			
@@ -167,6 +164,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="任务："><a href="#任务：" class="headerlink" title="任务："></a>任务：</h3><p>使用tensorflow训练一个神经网络作为分类器，分类的数据点如下：<br><img src="http://upload-images.jianshu.io/upload_images/1972331-342260dd468676cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="螺旋形数据点"></p>
+<a id="more"></a>
 <h3 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h3><p>数据点一共有三个类别，而且是螺旋形交织在一起，显然是线性不可分的，需要一个非线性的分类器。这里选择神经网络。<br>输入的数据点是二维的，因此每个点只有x,y坐标这个原始特征。这里设计的神经网络有两个隐藏层，每层有50个神经元，足够抓住数据点的高维特征（实际上每层10个都够用了）。最后输出层是一个逻辑回归，根据隐藏层计算出的50个特征来预测数据点的分类（红、黄、蓝）。<br>一般训练数据多的话，应该用随机梯度下降来训练神经网络，这里训练数据较少（300），就直接批量梯度下降了。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 导入包、初始化</span></div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"></div><div class="line">%matplotlib inline</div><div class="line">plt.rcParams[<span class="string">'figure.figsize'</span>] = (<span class="number">10.0</span>, <span class="number">8.0</span>) <span class="comment"># set default size of plots</span></div><div class="line">plt.rcParams[<span class="string">'image.interpolation'</span>] = <span class="string">'nearest'</span></div><div class="line">plt.rcParams[<span class="string">'image.cmap'</span>] = <span class="string">'gray'</span></div></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成螺旋形的线形不可分数据点</span></div><div class="line">np.random.seed(<span class="number">0</span>)</div><div class="line">N = <span class="number">100</span> <span class="comment"># 每个类的数据个数</span></div><div class="line">D = <span class="number">2</span> <span class="comment"># 输入维度</span></div><div class="line">K = <span class="number">3</span> <span class="comment"># 类的个数</span></div><div class="line">X = np.zeros((N*K,D))</div><div class="line">num_train_examples = X.shape[<span class="number">0</span>]</div><div class="line">y = np.zeros(N*K, dtype=<span class="string">'uint8'</span>)</div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> xrange(K):</div><div class="line">  ix = range(N*j,N*(j+<span class="number">1</span>))</div><div class="line">  r = np.linspace(<span class="number">0.0</span>,<span class="number">1</span>,N) <span class="comment"># radius</span></div><div class="line">  t = np.linspace(j*<span class="number">4</span>,(j+<span class="number">1</span>)*<span class="number">4</span>,N) + np.random.randn(N)*<span class="number">0.2</span> <span class="comment"># theta</span></div><div class="line">  X[ix] = np.c_[r*np.sin(t), r*np.cos(t)]</div><div class="line">  y[ix] = j</div><div class="line">fig = plt.figure()</div><div class="line">plt.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y, s=<span class="number">40</span>, cmap=plt.cm.Spectral)</div><div class="line">plt.xlim([<span class="number">-1</span>,<span class="number">1</span>])</div><div class="line">plt.ylim([<span class="number">-1</span>,<span class="number">1</span>])</div></pre></td></tr></table></figure>
@@ -472,25 +470,17 @@ MathJax.Hub.Queue(function() {
       
       
     
-      
-      
-      
-    
     
 
     <ul style="width: 70%">
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
-      
-        
-      
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
       
         
     </ul>
@@ -511,19 +501,19 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Android开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Android开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -573,38 +563,6 @@ MathJax.Hub.Queue(function() {
     	</section>
     
 
-    
-    	<section class="tools-section tools-section-friends" q-show="friends">
-  		
-        <ul class="search-ul">
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接1</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接2</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接3</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接4</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接5</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接6</a>
-            </li>
-          
-        </ul>
-  		
-    	</section>
     
 
     
