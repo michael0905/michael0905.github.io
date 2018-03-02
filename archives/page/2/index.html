@@ -6,23 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>AFNetworking 3.x 使用心得 | Yiyuan Liu&#39;s Blog</title>
+  <title>Archives | Yiyuan Liu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。
-##AFNetworking进一步封装AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还">
-<meta property="og:type" content="article">
-<meta property="og:title" content="AFNetworking 3.x 使用心得">
-<meta property="og:url" content="http://yoursite.com/2017/06/23/AFNetworking 3.x 使用心得/index.html">
+  <meta name="description" content="浙江大学生物医学工程硕士在读">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Yiyuan Liu's Blog">
+<meta property="og:url" content="http://yoursite.com/archives/page/2/index.html">
 <meta property="og:site_name" content="Yiyuan Liu's Blog">
-<meta property="og:description" content="AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。
-##AFNetworking进一步封装AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-39e2e19c7040a3b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-12-12T07:53:14.640Z">
+<meta property="og:description" content="浙江大学生物医学工程硕士在读">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AFNetworking 3.x 使用心得">
-<meta name="twitter:description" content="AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。
-##AFNetworking进一步封装AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1972331-39e2e19c7040a3b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:title" content="Yiyuan Liu's Blog">
+<meta name="twitter:description" content="浙江大学生物医学工程硕士在读">
   
     <link rel="alternative" href="/atom.xml" title="Yiyuan Liu&#39;s Blog" type="application/atom+xml">
   
@@ -144,170 +138,63 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-AFNetworking 3.x 使用心得" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      AFNetworking 3.x 使用心得
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/03/28/seamcarving/" class="archive-article-date">
+  	<time datetime="2017-03-28T07:56:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-28</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/03/28/seamcarving/">SeamCarving</a>
     </h1>
   
 
-        
-        <a href="/2017/06/23/AFNetworking 3.x 使用心得/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:18:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。<br>在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。</p>
-<p>##AFNetworking进一步封装<br>AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还是不够。AFNetworking是一个通用的库，而在我们自己的项目中，有特定的需求，而且往往在许多类中都需要用到网络请求。对AFNetworking进一步封装，能够大大简化代码，减少重复。<br>举个例子，新建一个CDMNetworkManager类，继承AFHTTPSessionManager。</p>
-<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//CDMNetworkManager.h</div><div class="line">#import &lt;AFNetworking/AFNetworking.h&gt;</div><div class="line"></div><div class="line">typedef void(^requestSuccessBlock) (NSURLSessionTask *task, id resposeObject);</div><div class="line">typedef void(^requestFailureBlock) (NSURLSessionTask *task, NSError *error);</div><div class="line"></div><div class="line">@interface CDMNetworkManager : AFHTTPSessionManager</div><div class="line">+(instancetype)sharedManager;</div><div class="line">-(void)sendPostRequest:(NSString *)path parameters:(NSDictionary *)parameters success:(requestSuccessBlock)success failure:(requestFailureBlock)failure;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">//CDMNetworkManager.m</div><div class="line">#import &quot;CDMNetworkManager.h&quot;</div><div class="line"></div><div class="line">typedef void(^requestSuccessBlock) (NSURLSessionTask *task, id resposeObject);</div><div class="line">typedef void(^requestFailureBlock) (NSURLSessionTask *task, NSError *error);</div><div class="line"></div><div class="line">@implementation CDMNetworkManager</div><div class="line"></div><div class="line">+(instancetype)sharedManager&#123;</div><div class="line">    static CDMNetworkManager *manager = nil;</div><div class="line"></div><div class="line">    static dispatch_once_t onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">       manager = [[self alloc] initWithBaseURL:[NSURL URLWithString:@&quot;http://www.someurl.com/&quot;]];</div><div class="line"></div><div class="line">    &#125;);</div><div class="line">    return manager;</div><div class="line">&#125;</div><div class="line"></div><div class="line">-(void)sendPostRequest:(NSString *)path parameters:(NSDictionary *)parameters success:(requestSuccessBlock)success failure:(requestFailureBlock)failure&#123;</div><div class="line">    [self POST:path parameters:parameters progress:nil success:^(NSURLSessionTask *task, id responseObject)&#123;</div><div class="line">        success(task,responseObject);</div><div class="line">    &#125; failure:^(NSURLSessionTask *task, NSError *error)&#123;</div><div class="line">        failure(task,error);</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>初始化方法中使用了单例模式，这样与服务器的连接不会断掉，省去了每次建立连接时三次握手等过程。如果有多个URL地址，可以创建多个单例。如果有更多特殊的要求，比如设置超时时间等，可以在这个方法中设置。<br>具体的网络请求方法这里只封装了一个简单的post方法，如果有需要可以封装别的方法。<br>调用的时候很简单，在任何一个需要发送post请求的类中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[[CDMNetworkManager sharedManager] sendPostRequest:@&quot;XXX&quot; parameters:parameter success:^(NSURLSessionTask *task, id responseObject)&#123;</div><div class="line">        //your code</div><div class="line">    &#125; failure:^(NSURLSessionTask *task, NSError *error)&#123;</div><div class="line">        // your code</div><div class="line">    &#125;];</div></pre></td></tr></table></figure></p>
-<h2 id="调试工具"><a href="#调试工具" class="headerlink" title="调试工具"></a>调试工具</h2><p>曾经我每次网络请求调试的时候只会在回调里写log，然后在控制台里一行一行的仔细查找。如果这个请求返回的内容很多，在Xcode里的显示效果就很差，而且不能直接显示中文。体验很差！</p>
-<p>这时候需要神器<a href="https://www.charlesproxy.com/" target="_blank" rel="external">Charles</a></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1972331-39e2e19c7040a3b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>上面是Charles的截图，能够监听Mac的所有网络请求并且显示各种格式的内容，非常好用。如果用模拟器的话就可以直接用Charles抓包，如果真机调试的话，需要设置一下iPhone，网上也有很多教程。<br>虽然是付费软件，但是不买license只是打开时会有10秒延时，每隔30分钟自动关闭。</p>
-<p>##常见错误<br>Error Domain=com.alamofire.error.serialization.response Code=-1016 “Request failed: unacceptable content-type: text/html”</p>
-<p>出现这个问题的原因有很多，从表面上看是返回数据的格式不支持text/html，但是为什么返回了text/html？原因不唯一。<br>首先要看请求的response code，如果是200，说明请求已经传到服务器并且成功返回，返回的格式是text/html。AFNetworking的默认response serializer是AFJSONResponseSerializer，不支持text/html。<br>这时需要在manager的初始化方法中增加一下代码。或者与服务器开发人员沟通，改写服务器端。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@&quot;text/html&quot;];</div></pre></td></tr></table></figure></p>
-<p>如果response code是400，说明服务器根本没有收到请求。这时为什么返回了一个text/html的数据呢？返回的数据在Xcode控制台上显示为16进制，但是在Charles里我们可以看到结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</div><div class="line">&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;</div><div class="line">  &lt;head&gt;</div><div class="line">    &lt;title&gt;请求错误&lt;/title&gt;</div><div class="line">    &lt;style&gt;BODY &#123; color: #000000; background-color: white; font-family: Verdana; margin-left: 0px; margin-top: 0px; &#125; #content &#123; margin-left: 30px; font-size: .70em; padding-bottom: 2em; &#125; A:link &#123; color: #336699; font-weight: bold; text-decoration: underline; &#125; A:visited &#123; color: #6699cc; font-weight: bold; text-decoration: underline; &#125; A:active &#123; color: #336699; font-weight: bold; text-decoration: underline; &#125; .heading1 &#123; background-color: #003366; border-bottom: #336699 6px solid; color: #ffffff; font-family: Tahoma; font-size: 26px; font-weight: normal;margin: 0em 0em 10px -20px; padding-bottom: 8px; padding-left: 30px;padding-top: 16px;&#125; pre &#123; font-size:small; background-color: #e5e5cc; padding: 5px; font-family: Courier New; margin-top: 0px; border: 1px #f0f0e0 solid; white-space: pre-wrap; white-space: -pre-wrap; word-wrap: break-word; &#125; table &#123; border-collapse: collapse; border-spacing: 0px; font-family: Verdana;&#125; table th &#123; border-right: 2px white solid; border-bottom: 2px white solid; font-weight: bold; background-color: #cecf9c;&#125; table td &#123; border-right: 2px white solid; border-bottom: 2px white solid; background-color: #e5e5cc;&#125;&lt;/style&gt;</div><div class="line">  &lt;/head&gt;</div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;div id=&quot;content&quot;&gt;</div><div class="line">      &lt;p class=&quot;heading1&quot;&gt;请求错误&lt;/p&gt;</div><div class="line">      &lt;p xmlns=&quot;&quot;&gt;服务器处理请求时遇到错误。有关构造有效服务请求的内容，请参阅&lt;a rel=&quot;help-page&quot; href=&quot;http://www.zjubiomedit.com:13264/HypertensionService.svc/help&quot;&gt;服务帮助页&lt;/a&gt;。&lt;/p&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<p>这是自动返回的一个错误页面，而不是服务器返回的数据格式不对。这时候再去找response serializer的问题就南辕北辙了。</p>
-<p>那么为什么服务器没有受到请求？<br>一种可能是baseURL的问题。AFHTTPSessionManager的初始化中用到了baseURL，与之后的path拼接时可能出错，检查一下。<br>还有可能是request serializer的问题。AFNetworking默认的是AFHTTPRequestSerializer。如果服务器接受的参数只能是json的话，需要使用AFJSONRequestSerializer。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.requestSerializer = [AFJSONRequestSerializer serializer];</div></pre></td></tr></table></figure></p>
-<p>可能还有其他各种各样奇怪的原因，欢迎大家补充。</p>
-<p>作者时间、能力有限，文章难免有不足之处，请大家指正。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2017/06/23/AFNetworking 3.x 使用心得/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2017/06/23/python根据BM25实现文本检索/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          python文本相似度计算
-        
-      </div>
-    </a>
   
   
-    <a href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">CoreBluetooth连接蓝牙健康设备</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
+    
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/archives/">&laquo; Prev</a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span>
+    </nav>
   
 
 
@@ -331,8 +218,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

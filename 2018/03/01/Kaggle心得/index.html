@@ -6,23 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>AFNetworking 3.x 使用心得 | Yiyuan Liu&#39;s Blog</title>
+  <title>Kaggle心得 | Yiyuan Liu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。
-##AFNetworking进一步封装AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还">
+  <meta name="description" content="最近参加了两场Kaggle比赛,收获颇多,一直想写篇文章总结一下。接触Kaggle到现在不到一年，比赛成绩一个银牌（5%）一个铜牌（9%），勉强算入门了，跟大神们还有很大的距离。新学期准备找实习面试，整理一下项目经验，于是动笔总结总结参加Kaggle比赛的个人心得体会和技巧。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AFNetworking 3.x 使用心得">
-<meta property="og:url" content="http://yoursite.com/2017/06/23/AFNetworking 3.x 使用心得/index.html">
+<meta property="og:title" content="Kaggle心得">
+<meta property="og:url" content="http://yoursite.com/2018/03/01/Kaggle心得/index.html">
 <meta property="og:site_name" content="Yiyuan Liu's Blog">
-<meta property="og:description" content="AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。
-##AFNetworking进一步封装AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-39e2e19c7040a3b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-12-12T07:53:14.640Z">
+<meta property="og:description" content="最近参加了两场Kaggle比赛,收获颇多,一直想写篇文章总结一下。接触Kaggle到现在不到一年，比赛成绩一个银牌（5%）一个铜牌（9%），勉强算入门了，跟大神们还有很大的距离。新学期准备找实习面试，整理一下项目经验，于是动笔总结总结参加Kaggle比赛的个人心得体会和技巧。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-7133e0b19f1f0571.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-2a4660d31d42a7b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-5949b8519448c023.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/400">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-71a86b9e1521a5a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1972331-f1693d88d622a9e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-03-01T15:39:07.540Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AFNetworking 3.x 使用心得">
-<meta name="twitter:description" content="AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。
-##AFNetworking进一步封装AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1972331-39e2e19c7040a3b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:title" content="Kaggle心得">
+<meta name="twitter:description" content="最近参加了两场Kaggle比赛,收获颇多,一直想写篇文章总结一下。接触Kaggle到现在不到一年，比赛成绩一个银牌（5%）一个铜牌（9%），勉强算入门了，跟大神们还有很大的距离。新学期准备找实习面试，整理一下项目经验，于是动笔总结总结参加Kaggle比赛的个人心得体会和技巧。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1972331-7133e0b19f1f0571.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
   
     <link rel="alternative" href="/atom.xml" title="Yiyuan Liu&#39;s Blog" type="application/atom+xml">
   
@@ -144,43 +145,84 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-AFNetworking 3.x 使用心得" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Kaggle心得" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      AFNetworking 3.x 使用心得
+      Kaggle心得
     </h1>
   
 
         
-        <a href="/2017/06/23/AFNetworking 3.x 使用心得/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:18:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
+        <a href="/2018/03/01/Kaggle心得/" class="archive-article-date">
+  	<time datetime="2018-03-01T14:15:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-01</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>AFNetworking毫无疑问是目前iOS开发中（Objective-C）最好的第三方网络库。一般规模的app使用AFNetworking就可以完成所有需求，不需要自己造轮子。<br>在使用AFNetworking的过程中遇到了许多坑，也获得了不少经验，在这里总结一下，希望能够帮助到大家。</p>
-<p>##AFNetworking进一步封装<br>AFNetworking 3.x 已经为我们提供了丰富而且易用的API，但还是不够。AFNetworking是一个通用的库，而在我们自己的项目中，有特定的需求，而且往往在许多类中都需要用到网络请求。对AFNetworking进一步封装，能够大大简化代码，减少重复。<br>举个例子，新建一个CDMNetworkManager类，继承AFHTTPSessionManager。</p>
+        <p>最近参加了两场Kaggle比赛,收获颇多,一直想写篇文章总结一下。接触Kaggle到现在不到一年，比赛成绩一个银牌（5%）一个铜牌（9%），勉强算入门了，跟大神们还有很大的距离。新学期准备找实习面试，整理一下项目经验，于是动笔总结总结参加Kaggle比赛的个人心得体会和技巧。</p>
 <a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//CDMNetworkManager.h</div><div class="line">#import &lt;AFNetworking/AFNetworking.h&gt;</div><div class="line"></div><div class="line">typedef void(^requestSuccessBlock) (NSURLSessionTask *task, id resposeObject);</div><div class="line">typedef void(^requestFailureBlock) (NSURLSessionTask *task, NSError *error);</div><div class="line"></div><div class="line">@interface CDMNetworkManager : AFHTTPSessionManager</div><div class="line">+(instancetype)sharedManager;</div><div class="line">-(void)sendPostRequest:(NSString *)path parameters:(NSDictionary *)parameters success:(requestSuccessBlock)success failure:(requestFailureBlock)failure;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">//CDMNetworkManager.m</div><div class="line">#import &quot;CDMNetworkManager.h&quot;</div><div class="line"></div><div class="line">typedef void(^requestSuccessBlock) (NSURLSessionTask *task, id resposeObject);</div><div class="line">typedef void(^requestFailureBlock) (NSURLSessionTask *task, NSError *error);</div><div class="line"></div><div class="line">@implementation CDMNetworkManager</div><div class="line"></div><div class="line">+(instancetype)sharedManager&#123;</div><div class="line">    static CDMNetworkManager *manager = nil;</div><div class="line"></div><div class="line">    static dispatch_once_t onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">       manager = [[self alloc] initWithBaseURL:[NSURL URLWithString:@&quot;http://www.someurl.com/&quot;]];</div><div class="line"></div><div class="line">    &#125;);</div><div class="line">    return manager;</div><div class="line">&#125;</div><div class="line"></div><div class="line">-(void)sendPostRequest:(NSString *)path parameters:(NSDictionary *)parameters success:(requestSuccessBlock)success failure:(requestFailureBlock)failure&#123;</div><div class="line">    [self POST:path parameters:parameters progress:nil success:^(NSURLSessionTask *task, id responseObject)&#123;</div><div class="line">        success(task,responseObject);</div><div class="line">    &#125; failure:^(NSURLSessionTask *task, NSError *error)&#123;</div><div class="line">        failure(task,error);</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>初始化方法中使用了单例模式，这样与服务器的连接不会断掉，省去了每次建立连接时三次握手等过程。如果有多个URL地址，可以创建多个单例。如果有更多特殊的要求，比如设置超时时间等，可以在这个方法中设置。<br>具体的网络请求方法这里只封装了一个简单的post方法，如果有需要可以封装别的方法。<br>调用的时候很简单，在任何一个需要发送post请求的类中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[[CDMNetworkManager sharedManager] sendPostRequest:@&quot;XXX&quot; parameters:parameter success:^(NSURLSessionTask *task, id responseObject)&#123;</div><div class="line">        //your code</div><div class="line">    &#125; failure:^(NSURLSessionTask *task, NSError *error)&#123;</div><div class="line">        // your code</div><div class="line">    &#125;];</div></pre></td></tr></table></figure></p>
-<h2 id="调试工具"><a href="#调试工具" class="headerlink" title="调试工具"></a>调试工具</h2><p>曾经我每次网络请求调试的时候只会在回调里写log，然后在控制台里一行一行的仔细查找。如果这个请求返回的内容很多，在Xcode里的显示效果就很差，而且不能直接显示中文。体验很差！</p>
-<p>这时候需要神器<a href="https://www.charlesproxy.com/" target="_blank" rel="external">Charles</a></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1972331-39e2e19c7040a3b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>上面是Charles的截图，能够监听Mac的所有网络请求并且显示各种格式的内容，非常好用。如果用模拟器的话就可以直接用Charles抓包，如果真机调试的话，需要设置一下iPhone，网上也有很多教程。<br>虽然是付费软件，但是不买license只是打开时会有10秒延时，每隔30分钟自动关闭。</p>
-<p>##常见错误<br>Error Domain=com.alamofire.error.serialization.response Code=-1016 “Request failed: unacceptable content-type: text/html”</p>
-<p>出现这个问题的原因有很多，从表面上看是返回数据的格式不支持text/html，但是为什么返回了text/html？原因不唯一。<br>首先要看请求的response code，如果是200，说明请求已经传到服务器并且成功返回，返回的格式是text/html。AFNetworking的默认response serializer是AFJSONResponseSerializer，不支持text/html。<br>这时需要在manager的初始化方法中增加一下代码。或者与服务器开发人员沟通，改写服务器端。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@&quot;text/html&quot;];</div></pre></td></tr></table></figure></p>
-<p>如果response code是400，说明服务器根本没有收到请求。这时为什么返回了一个text/html的数据呢？返回的数据在Xcode控制台上显示为16进制，但是在Charles里我们可以看到结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</div><div class="line">&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;</div><div class="line">  &lt;head&gt;</div><div class="line">    &lt;title&gt;请求错误&lt;/title&gt;</div><div class="line">    &lt;style&gt;BODY &#123; color: #000000; background-color: white; font-family: Verdana; margin-left: 0px; margin-top: 0px; &#125; #content &#123; margin-left: 30px; font-size: .70em; padding-bottom: 2em; &#125; A:link &#123; color: #336699; font-weight: bold; text-decoration: underline; &#125; A:visited &#123; color: #6699cc; font-weight: bold; text-decoration: underline; &#125; A:active &#123; color: #336699; font-weight: bold; text-decoration: underline; &#125; .heading1 &#123; background-color: #003366; border-bottom: #336699 6px solid; color: #ffffff; font-family: Tahoma; font-size: 26px; font-weight: normal;margin: 0em 0em 10px -20px; padding-bottom: 8px; padding-left: 30px;padding-top: 16px;&#125; pre &#123; font-size:small; background-color: #e5e5cc; padding: 5px; font-family: Courier New; margin-top: 0px; border: 1px #f0f0e0 solid; white-space: pre-wrap; white-space: -pre-wrap; word-wrap: break-word; &#125; table &#123; border-collapse: collapse; border-spacing: 0px; font-family: Verdana;&#125; table th &#123; border-right: 2px white solid; border-bottom: 2px white solid; font-weight: bold; background-color: #cecf9c;&#125; table td &#123; border-right: 2px white solid; border-bottom: 2px white solid; background-color: #e5e5cc;&#125;&lt;/style&gt;</div><div class="line">  &lt;/head&gt;</div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;div id=&quot;content&quot;&gt;</div><div class="line">      &lt;p class=&quot;heading1&quot;&gt;请求错误&lt;/p&gt;</div><div class="line">      &lt;p xmlns=&quot;&quot;&gt;服务器处理请求时遇到错误。有关构造有效服务请求的内容，请参阅&lt;a rel=&quot;help-page&quot; href=&quot;http://www.zjubiomedit.com:13264/HypertensionService.svc/help&quot;&gt;服务帮助页&lt;/a&gt;。&lt;/p&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<p>这是自动返回的一个错误页面，而不是服务器返回的数据格式不对。这时候再去找response serializer的问题就南辕北辙了。</p>
-<p>那么为什么服务器没有受到请求？<br>一种可能是baseURL的问题。AFHTTPSessionManager的初始化中用到了baseURL，与之后的path拼接时可能出错，检查一下。<br>还有可能是request serializer的问题。AFNetworking默认的是AFHTTPRequestSerializer。如果服务器接受的参数只能是json的话，需要使用AFJSONRequestSerializer。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.requestSerializer = [AFJSONRequestSerializer serializer];</div></pre></td></tr></table></figure></p>
-<p>可能还有其他各种各样奇怪的原因，欢迎大家补充。</p>
-<p>作者时间、能力有限，文章难免有不足之处，请大家指正。</p>
+<p>先放一张成绩图和Kaggle个人主页的<a href="https://www.kaggle.com/yiyuanliu" target="_blank" rel="external">链接</a><br><img src="http://upload-images.jianshu.io/upload_images/1972331-7133e0b19f1f0571.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620" alt="成绩"></p>
+<p>我参加的这两场比赛，一个是<a href="https://www.kaggle.com/c/zillow-prize-1" target="_blank" rel="external">Zillow Prize</a>：Zillow公司有一个房价预测算法Zestimate，根据房产的特征、历史成交数据和Zestimate预测值之间的logerror（这里有点绕），来预测实际成交价和Zestimate预测值之间的logerror。另一个是<a href="https://www.kaggle.com/c/tensorflow-speech-recognition-challenge" target="_blank" rel="external">TensorFlow Speech Recoginition Challenge</a>：识别长度为1秒的英文语音指令，并且分为12个类，包括10个指令（yes, no, up, down, left, right, on, off, stop, go）以及未知（unknown）和静默（silence）。<br>这两个比赛，刚好属于Kaggle社区中两个不同类别。Zillow Prize给定了60个房产的特征，数据量不是特别大并且有明确的特征，适合xgboost、lgb这样的树模型，对机器的要求不高。而语音识别这个比赛则相反，原始数据是wav文件，实际上相当于对波形图进行分类，不可能手动选特征，因此这个比赛适用深度学习的各种模型。并且想要取得好成绩，需要使用复杂的模型，CPU就不够用了，需要一块不错的显卡(我用的是队友的GTX 1070ti)。</p>
+<p>两场比赛下来，自己总结了一些kaggle比赛的基本流程：</p>
+<ol>
+<li>特征工程</li>
+<li>模型选择</li>
+<li>调参</li>
+<li>模型融合</li>
+</ol>
+<h3 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h3><p>特征工程是Kaggle比赛的重中之重，尤其是对于房价预测这类使用树模型的比赛。模型大同小异，基本是由GBDT模型演化而来，而且主要用XGBoost、LightGBM等几种开源框架。所以，模型大家都差不多，特征就是关键了。<br>每个比赛都有独特的背景，想要发现甚至是自己创造出重要的特征，往往需要专业的领域知识，比如Zillow这个比赛要预测美国的房价，原始特征有卧室数量、面积，税收等等。想要自己通过原始特征组合，创造出一个“magic feature”就需要了解美国的房地产业。所以，选择一个自己熟悉领域的比赛，会比较有优势。<br>比赛背景千变万化，从数据科学的角度，还有许多通用的方法来做特征工程。这里列举一些这个比赛里用到的方法：</p>
+<ol>
+<li>基础预处理：对category类型的数据OneHot编码；数值类型的数据归一化（但是这里用到的大多数模型都是基于决策树的，所以不需要）</li>
+<li><p>缺失值处理：实际数据集中有许多数据是缺失的，考虑列出每个特征的缺失比例，比例过大的直接舍弃，否则想办法填充。这个比例没有什么定式，舍弃特征会丢掉有用信息，填充会引入噪声，具体怎么操作要看模型实际的表现。填充的话，基础的是用均值、中位数等填充，更准确的方法是用算法拟合，还可以直接把缺失视为一种特殊的值（这个比赛中的许多模型就是用-1填充）。对于树模型来说，数据缺失并不影响树的生成，所以xgboost会在生成树的同时，根据training loss自动学会将遇到缺失值时分裂到左子树还是右子树。作者Tianqi Chen的<a href="https://github.com/dmlc/xgboost/issues/21" target="_blank" rel="external">原话</a>：</p>
+<blockquote>
+<p>Internally, XGBoost will automatically learn what is the best direction to go when a value is missing. Equivalently, this can be viewed as automatically “learn” what is the best imputation value for missing values based on reduction on training loss.</p>
+</blockquote>
+</li>
+<li><p>outlier: 由于各种原因，往往有一些样本的误差特别大，把这些样本加入模型会引入很大的噪声，就像很多打分的比赛会去掉最高分和最低分之后再取平均值。这个比赛中去掉这样大误差的outlier能带来很大的提升。<br>下图是所有样本的logerror值，可以看到绝大部分都在0附近，去掉两端logerror急剧上升的样本，能让模型更稳定。<br><img src="http://upload-images.jianshu.io/upload_images/1972331-2a4660d31d42a7b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="outsider"></p>
+</li>
+<li><p>相关性分析：特征之间并不是完全独立的，这时候可以计算correlation coefficient来确定特征之间的两两关系。还可以计算每个特征和目标值（这里是logerror）之间的相关性，绝对值越大说明这个特征的作用越大。</p>
+</li>
+<li>模型权重分析：现在大多数模型在训练完成后都会给出获取特征权重的接口，这时的权重是直接反映了一个特征在这个模型中的作用。这是判断一个特征是否有用的重要方法。例如，原始特征有卧室数量和卫生间数量，我们自己创造了一个特征房间总数（卧室数量+卫生间数量）。这时可以用这种方法判断这个新特征是否有效。</li>
+</ol>
+<p>特征工程在实际应用中非常有挑战性，还有许多方法，上述只是一些皮毛。Zillow比赛里我尝试了许多新特征，但最终都没有采用。</p>
+<p>而对于语音识别比赛来说，特征工程就非常有限了。在语音识别领域广泛使用的特征是log-mel频谱和mfcc特征，没有必要自己再做特征工程。而现在火热的端到端（end-to-end）语音识别优点就是省去特征提取，直接使用原始波形作为神经网络的输入。</p>
+<h3 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h3><p>Kaggle比赛很重要的一点是，不可能只使用一个单一模型。在许多比赛的第一名公布的方案里，往往有十几个甚至几十个不同的模型。模型融合（ensemble）实在是太重要了，模型融合的方法下文再讲，但是在选择模型的时候就要考虑到如何让这些模型在融合后效果更好。<br>不管用什么方法融合，想要模型融合之后效果好，模型之间要有多样性。换句话说，模型之间越不相似，模型融合的效果越好。<br>对于Zillow这样给定特征，数据不是图像音频的比赛，主要选用树模型。这类Kaggle比赛，首选肯定是XGBoost和LightGBM。这两个模型都是由梯度提升树（GBDT）演化而来的。简而言之，就是通过梯度提升（Gradient Boost）算法训练许多决策树及其对应的权重，然后投票得到最终的结果。详细的数学证明可以看<a href="https://www.youtube.com/watch?v=aX6ZiIWLjdk&amp;t=0s&amp;list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2&amp;index=42" target="_blank" rel="external">林轩田老师的台大机器学习技法课程</a><br>xgboost模型在生成决策树时是level-wise的，即每一层上的所有节点都会一起分裂，通过max_depth来控制树的高度从而控制模型的拟合程度。lightgbm模型则是leaf-wise的，每一次分裂会从所有叶子节点中找增益最大的节点来分裂，所以主要通过num-leaves来控制模型的拟合程度。<br>只用这两个模型显然不够，可以调整不同的参数来获得许多个侧重点不同的xgboost（lgb）模型：不同的深度（叶子数）、不同的损失函数等等。另外，在这个比赛里还用到了CatBoost、sklearn里的一些模型：随机森林、ExtraTree等。</p>
+<p>对于语音识别这类用深度学习的比赛而言，模型选择主要在于神经网络的结构和不同的输入。首先可以尝试不同种类的网络，比如CNN、LSTM。这里很难说有什么通用的技巧，在这个比赛中，CNN的效果较好，我用的所有6个模型都是以CNN为基础的。主要用到的结构是<a href="https://arxiv.org/abs/1409.1556" target="_blank" rel="external">VGGNet</a>和<a href="https://github.com/hujie-frank/SENet" target="_blank" rel="external">SE-ResNet</a>。对于VGGNet，实际上并没有完全按照论文上的模型，只是参考了思路，整个网络都使用了同样大小的卷积核尺寸（3<em>3）和最大池化尺寸（2</em>2）。SE（Sequeeze-and-Excitation）Block是一个挺新的结构，在2017年提出，核心思想是学习特征权重。主要是通过global average pool以及全连接层来学习feature map的权重，然后作为scale乘到原始feature map上。然后，如下图所示，将SE Block和ResNet结合。<br><img src="http://upload-images.jianshu.io/upload_images/1972331-5949b8519448c023.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/400" alt="SE-ResNet"></p>
+<p>在深度学习中，很多时候难以说清为什么这个网络结构效果好，只能根据结果来证明。这次的语音识别比赛中，一个比较有用的trick是：为了增加模型的多样性，在每个模型卷积操作完成后分别对feature map用全局最大池化和全局平均池化，相当于抓住了不同的特征，把一个模型变成了两个。另外，上文提到的三种特征：原始波形、log-mel频谱、mfcc特征分别作为输入，这样就形成了六个模型。<br><img src="http://upload-images.jianshu.io/upload_images/1972331-71a86b9e1521a5a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="architecture"></p>
+<h3 id="调参"><a href="#调参" class="headerlink" title="调参"></a>调参</h3><p>调参这事很复杂，有很多经验、方法，实际的比赛中往往还是需要一些玄学。调参最常用的方法就是GridSearch和RandomSearch。GridSearch是给定每个待调参数的几个选择，然后排列组合出所有可能性（就像网格一样），做Cross Validation，然后挑选出最好的那组参数组合。RandomSerach很类似，只是不直接给定参数的有限个取值可能，而是给出一个参数分布，从这个分布中随机采样一定个数的取值。<br>调参的方法理解了，那具体调什么参数呢？Zillow Prize比赛里，主要用的模型是XGBoost和LightGBM。下面列出一些主要用到的参数，更多的还是直接看文档。</p>
+<p>XGBoost:</p>
+<ul>
+<li>booster: gblinear/gbtree 基分类器用线性分类器还是决策树</li>
+<li>max_depth: 树最大深度</li>
+<li>learning_rate：学习率</li>
+<li>alpha：L1正则化系数</li>
+<li>lambda：L2正则化系数</li>
+<li>subsample: 训练时使用样本的比例</li>
+</ul>
+<p>LightGBM：</p>
+<ul>
+<li>num_leaves: 叶子节点的个数</li>
+<li>max_depth：最大深度，控制分裂的深度</li>
+<li>learning_rate: 学习率</li>
+<li>objective: 损失函数（mse, huber loss, fair loss等）</li>
+<li>min_data_in_leaf: 叶子节点必须包含的最少样本数</li>
+<li>feature_fraction: 训练时使用feature的比例</li>
+<li>bagging_fraction: 训练时使用样本的比例</li>
+</ul>
+<p>调参的时候需要理解这些参数到底是什么意思，如果过拟合了应该增大还是减小某个参数，这样才能有目的而不是盲目地调参。当然，想要找到最佳的参数很多时候需要一些经验和运气。也不需要极致追求最佳参数，大多数情况下找到一组相对不错的参数就可以了，往往还有别的方法来提升总成绩。</p>
+<p>Zillow Prize比赛中这些单个模型的训练时间是基本上是分钟级别的，这样可以有足够的时间来进行调参。而语音识别这个比赛里的模型需要在GPU上训练，一个模型要训练几个小时，其实没有什么时间来仔细的调参，更多的是靠经验来估计。<br>值得一提的是，语音识别比赛中遇到一个问题，所有模型在训练集和验证集上表现都很好，但是在提交的测试集上有15%-20%左右的差距。最后发现是测试集和给出的训练验证集样本分布不同：这个比赛是12个类的分类问题，最终的验证集上基本是均匀分布的，而给出的训练集和验证集上，未知（unknown）类样本明显多于其他类，而静默（silence）类则只有6个音频。最终构建喂给神经网络的batch时，需要重新对训练集采样。对于unknown和silence这两个特殊类，他们的比例也可以算是超参数，最后根据Kaggle社区里大神的分享，确定了10%是最佳的。</p>
+<h3 id="模型融合"><a href="#模型融合" class="headerlink" title="模型融合"></a>模型融合</h3><p>模型融合在Kaggle比赛中非常重要，同时也是一个很大的话题。这里只记录一下我应用的两种比较有效的方式。</p>
+<ol>
+<li>Averaging<br>Averaging是最简单粗暴也是最好理解的模型融合方式，而且效果还挺好的。实际上就是加权平均，小学生也会计算。虽然简单，但是非常有效。如果模型的多样性足够，比如有的模型擅长从税收角度预测房价，有的模型擅长从房间数量来预测房价，把这些模型平均后，取长补短，就能获得一个更准确泛化能力更强的模型。<br>每个模型的权重怎么算？一般是根据单个模型的表现好坏来决定，可以看测试集上的表现，Kaggle比赛里可以看LB Score，但是也不能完全看Public LB，这样就过拟合了。Zillow Prize比赛里我们的Public LB排到了前2%，但是最终所有测试集公布后还是回到了5%。</li>
+<li>Stacking<br>Stacking应该是目前各类竞赛中最好用的模型融合方法了。看下面这张流传很广的图，其实Stacking并不难理解。<br><img src="http://upload-images.jianshu.io/upload_images/1972331-f1693d88d622a9e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Stacking"><br>Stacking的核心思想是把第一层模型的结果作为第二层模型的特征，然后训练第二层模型得到最终结果。以5-fold stacking为例，将训练集随机分成5份，分别用其中4份作训练，来预测剩下的1份，同时也预测所有的测试集。这样，一个模型训练了五次，对训练集的预测拼起来，正好每一个训练集的样本都有一个预测值。对测试集的每个样本，则有5个预测值，求平均值作为测试集的预测值。这样，训练集和测试集都有一个预测值，作为第二层模型的特征。<br>另外，在语音识别比赛中还学到了一种类似Stacking的巧妙模型融合方法。CNN模型在所有卷积池化操作完成得到feature后，先不做全连接，把各个模型的feature全部拼接在一起，然后作为一个全连接神经网络的输入，相当于stacking中的第二层模型。</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Kaggle比赛对于关注数据科学的人来说肯定不陌生，参加一次比赛可以在实践中学习，远胜于看书看视频。初学者可以参考<a href="http://blog.csdn.net/han_xiaoyang/article/details/49797143" target="_blank" rel="external">这篇文章</a>，用经典的<a href="https://www.kaggle.com/c/titanic" target="_blank" rel="external">泰坦尼克号之灾</a>先练练手。很多知识只有实践过才能真正理解。Kaggle社区非常活跃，有许多大神会分享自己的思路甚至是代码，一起讨论一起学习会有巨大的进步。比赛成绩很有用，但更重要的是通过比赛学到东西！</p>
 
       
 
@@ -194,7 +236,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
         		</li>
       		
 		</ul>
@@ -250,7 +292,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2017/06/23/AFNetworking 3.x 使用心得/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/03/01/Kaggle心得/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -264,18 +306,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/06/23/python根据BM25实现文本检索/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          python文本相似度计算
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/06/23/CoreBluetooth连接蓝牙健康设备/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">CoreBluetooth连接蓝牙健康设备</div>
+    <a href="/2018/02/26/kaggle/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">kaggle</div>
       <i class="icon-circle-right"></i>
     </a>
   
