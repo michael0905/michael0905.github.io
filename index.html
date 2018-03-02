@@ -140,6 +140,106 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Longest-Univalue-Path" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/02/Longest-Univalue-Path/">Longest Univalue Path</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/02/Longest-Univalue-Path/" class="archive-article-date">
+  	<time datetime="2018-03-02T14:50:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p><a href="https://leetcode.com/problems/longest-univalue-path/description/" target="_blank" rel="external">原题地址</a><br>Given a binary tree, find the length of the longest path where each node in the path has the same value. This path may or may not pass through the root.</p>
+<p>Note: The length of path between two nodes is represented by the number of edges between them.</p>
+<p>Example 1:</p>
+<p>Input:</p>
+<pre><code>    5
+   / \
+  4   5
+ / \   \
+1   1   5
+</code></pre><p>Output:</p>
+<p>2</p>
+<p>Example 2:</p>
+<p>Input:</p>
+<pre><code>    1
+   / \
+  4   5
+ / \   \
+4   4   5
+</code></pre><p>Output:</p>
+<p>2</p>
+<p>Note: The given binary tree has not more than 10000 nodes. The height of the tree is not more than 1000.</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>用递归解决，从root节点开始遍历所有子节点，不走回头路保证时间复杂度为O(n)。最长路径可能经过root，但是也可能是在子节点中，所以要有一个全局变量储存最长路径。</p>
+<p>考虑一个节点：</p>
+<ol>
+<li>计算以它开始向左或向右的最长路径，作为递归返回值传给父节点</li>
+<li>计算经过它的最长路径（可以同时向左和向右延伸），与全局最长路径比较</li>
+</ol>
+<h3 id="python代码"><a href="#python代码" class="headerlink" title="python代码"></a>python代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"># Definition for a binary tree node.</div><div class="line"># class TreeNode(object):</div><div class="line">#     def __init__(self, x):</div><div class="line">#         self.val = x</div><div class="line">#         self.left = None</div><div class="line">#         self.right = None</div><div class="line"></div><div class="line">class Solution(object):</div><div class="line">    def search(self, node):</div><div class="line">        if node == None:</div><div class="line">            return 0</div><div class="line">        num1 = self.search(node.left) # 从左子节点开始的最长路径</div><div class="line">        num2 = self.search(node.right) # 从右子节点开始的最长路径</div><div class="line">        if node.left and node.left.val == node.val:</div><div class="line">            num1 += 1 # 左子节点和节点值相同，从左子节点开始的最长路径也包含了本节点，所以+1</div><div class="line">        else:</div><div class="line">            num1 = 0 # 如果节点和左子节点值不同，从这个节点向左的路径长度就是0</div><div class="line">        if node.right and node.right.val == node.val:</div><div class="line">            num2 += 1</div><div class="line">        else:</div><div class="line">            num2 = 0 </div><div class="line">        self.longest = max(self.longest, num1 + num2) # 经过此节点的最长路径与全局最长路径比较</div><div class="line">        return max(num1, num2) # 返回从此节点开始的最长路径</div><div class="line">        </div><div class="line">    def longestUnivaluePath(self, root):</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        :type root: TreeNode</div><div class="line">        :rtype: int</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        self.longest = 0 # 全局最长路径</div><div class="line">        self.search(root)</div><div class="line">        return self.longest</div></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/02/Longest-Univalue-Path/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Kaggle心得" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -823,82 +923,6 @@
 
 
   
-    <article id="post-wordnet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/28/wordnet/">WordNet</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/28/wordnet/" class="archive-article-date">
-  	<time datetime="2017-03-28T07:58:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近在coursera上学习Princeton大学的Algorithm PartII，这个系列的两门课是我见过最好的算法课。主讲Robert Sedgewick师承高德纳，声名远播，虽然年纪大了，但是讲课思路清晰，深入浅出。与Kevin Wayne共同编著的《算法》第四版作为教材，没有《算法导论》那么偏理论、晦涩难懂，能够把常见的数据结构和算法讲得很透彻，容易理解。<br>更值得称道的是这门课编程作业及其评分系统。上课的内容是基础的数据结构和算法，但编程作业往往是这些算法的实际应用，能真正理解为什么在给定的情况下要使用这样的数据结构、算法。作业的评分不仅仅是看正确与否，还有运行时间、内存的要求，会给出详细的分析报告，如果不是ACM大神，这些作业都值得花时间去仔细琢磨。</p>
-        
-          <a class="article-more-a" href="/2017/03/28/wordnet/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/28/wordnet/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1013,11 +1037,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Android开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
