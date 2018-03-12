@@ -140,6 +140,185 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Path-Sum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/12/Path-Sum/">Path Sum</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/12/Path-Sum/" class="archive-article-date">
+  	<time datetime="2018-03-12T11:05:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p><a href="https://leetcode.com/problems/path-sum/description/" target="_blank" rel="external">原题地址</a></p>
+<p>Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.</p>
+<p>For example:<br>Given the below binary tree and sum = 22,</p>
+<pre><code>      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \      \
+7    2      1
+</code></pre><p>return true, as there exist a root-to-leaf path 5-&gt;4-&gt;11-&gt;2 which sum is 22.</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>递归查找，每个节点判断一下是否叶子节点，如果是则判断value之和是否与sum相同；如果不是叶子节点，就递归查找它的左右子节点。</p>
+<h3 id="python代码"><a href="#python代码" class="headerlink" title="python代码"></a>python代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"># Definition for a binary tree node.</div><div class="line"># class TreeNode:</div><div class="line">#     def __init__(self, x):</div><div class="line">#         self.val = x</div><div class="line">#         self.left = None</div><div class="line">#         self.right = None</div><div class="line"></div><div class="line">class Solution:</div><div class="line">    def hasPathSum(self, root, sum):</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        :type root: TreeNode</div><div class="line">        :type sum: int</div><div class="line">        :rtype: bool</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        if root == None:</div><div class="line">            return False</div><div class="line">        if root.left == None and root.right == None:</div><div class="line">            # leaf node</div><div class="line">            return root.val == sum</div><div class="line">        return self.hasPathSum(root.left, sum-root.val) or self.hasPathSum(root.right, sum-root.val)</div></pre></td></tr></table></figure>
+<h2 id="Path-Sum"><a href="#Path-Sum" class="headerlink" title="Path Sum"></a>Path Sum</h2><p>进阶版Path Sum，不仅判断是否存在这样的路径，而是要求给出所有满足要求的路径。<br><a href="https://leetcode.com/problems/path-sum-ii/description/" target="_blank" rel="external">原题地址</a></p>
+<h3 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h3><p>总体思想与上一题类似，但是需要增加一个参数list来保存路径，所以需要重新写一个递归函数。注意往list里append值之后要对应的pop，否则后续对list的操作也会反映到最终结果上，因为最终返回的是一个List[List[int]]，其中的每个list是浅拷贝。</p>
+<h3 id="python代码-1"><a href="#python代码-1" class="headerlink" title="python代码"></a>python代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"># Definition for a binary tree node.</div><div class="line"># class TreeNode(object):</div><div class="line">#     def __init__(self, x):</div><div class="line">#         self.val = x</div><div class="line">#         self.left = None</div><div class="line">#         self.right = None</div><div class="line"></div><div class="line">class Solution(object):</div><div class="line">    def search(self, root, sum, ls):</div><div class="line">        if root == None:</div><div class="line">            return</div><div class="line">        if root.left == None and root.right == None:</div><div class="line">            # leaf node</div><div class="line">            if sum == root.val:</div><div class="line">                ls.append(root.val)</div><div class="line">                self.result.append(ls[:])</div><div class="line">                ls.pop()</div><div class="line">        else:</div><div class="line">            # not leaf node</div><div class="line">            ls.append(root.val)</div><div class="line">            self.search(root.left, sum-root.val, ls)</div><div class="line">            self.search(root.right, sum-root.val, ls)</div><div class="line">            ls.pop()</div><div class="line"></div><div class="line">    def pathSum(self, root, sum):</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        :type root: TreeNode</div><div class="line">        :type sum: int</div><div class="line">        :rtype: List[List[int]]</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        self.result = []</div><div class="line">        self.search(root, sum, [])</div><div class="line">        return self.result</div></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/12/Path-Sum/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Minimum-Depth-of-Binary-Tree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/12/Minimum-Depth-of-Binary-Tree/">Minimum Depth of Binary Tree</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/12/Minimum-Depth-of-Binary-Tree/" class="archive-article-date">
+  	<time datetime="2018-03-12T11:04:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p><a href="https://leetcode.com/problems/minimum-depth-of-binary-tree/description/" target="_blank" rel="external">原题地址</a></p>
+<p>Given a binary tree, find its minimum depth.</p>
+<p>The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>最短路径的定义是从root到叶子节点的最少节点数，从root开始递归查找，对于每个节点需要判断子节点的情况：</p>
+<ul>
+<li>左子节点为空，右子节点不为空：继续查找右子节点</li>
+<li>左子节点不为空，右子节点为空：继续查找左子节点</li>
+<li>左右子节点都不为空：分别查找两个子节点并返回两者较小的值</li>
+<li>左右子节点都为空：直接返回</li>
+</ul>
+<p>上述四种情况可以进一步合并，只要考虑一个子节点为空，另一个子节点不为空的特殊情况：因为空节点返回值为0，所以只要将左右两个子节点的返回值相加就可以了；其他情况只要无脑取两个子节点的较小返回值。</p>
+<pre><code>1
+ \
+  2
+ / 
+3    
+</code></pre><p>因为要找到叶子节点，对于节点2，不能直接取两个子节点的较小值。</p>
+<h3 id="python代码"><a href="#python代码" class="headerlink" title="python代码"></a>python代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"># Definition for a binary tree node.</div><div class="line"># class TreeNode(object):</div><div class="line">#     def __init__(self, x):</div><div class="line">#         self.val = x</div><div class="line">#         self.left = None</div><div class="line">#         self.right = None</div><div class="line"></div><div class="line">class Solution(object):        </div><div class="line">    def minDepth(self, root):</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        :type root: TreeNode</div><div class="line">        :rtype: int</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        if root == None:</div><div class="line">            return 0</div><div class="line">        if root.left == None or root.right == None:</div><div class="line">            return self.minDepth(root.left) + self.minDepth(root.right) + 1</div><div class="line">        return min(self.minDepth(root.left), self.minDepth(root.right)) + 1</div></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/12/Minimum-Depth-of-Binary-Tree/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Longest-Univalue-Path" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -264,68 +443,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/03/01/Kaggle心得/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-kaggle" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/26/kaggle/">kaggle</a>
-    </h1>
-  
-
-        
-        <a href="/2018/02/26/kaggle/" class="archive-article-date">
-  	<time datetime="2018-02-26T02:45:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/26/kaggle/">展开全文 >></a>
         </p>
       
 
@@ -818,88 +935,6 @@
 
 
   
-    <article id="post-python文本相似度计算" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/28/python文本相似度计算/">python文本相似度计算</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/28/python文本相似度计算/" class="archive-article-date">
-  	<time datetime="2017-04-28T14:38:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ol>
-<li>分词、去停用词</li>
-<li>词袋模型向量化文本</li>
-<li>TF-IDF模型向量化文本</li>
-<li>LSI模型向量化文本</li>
-<li>计算相似度</li>
-</ol>
-        
-          <a class="article-more-a" href="/2017/04/28/python文本相似度计算/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/28/python文本相似度计算/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1010,19 +1045,19 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Android开发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
