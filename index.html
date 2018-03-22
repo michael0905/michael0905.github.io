@@ -8,15 +8,12 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Yiyuan Liu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="浙江大学生物医学工程硕士在读">
-<meta property="og:type" content="website">
+  <meta property="og:type" content="website">
 <meta property="og:title" content="Yiyuan Liu's Blog">
 <meta property="og:url" content="http://yoursite.com/index.html">
 <meta property="og:site_name" content="Yiyuan Liu's Blog">
-<meta property="og:description" content="浙江大学生物医学工程硕士在读">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Yiyuan Liu's Blog">
-<meta name="twitter:description" content="浙江大学生物医学工程硕士在读">
   
     <link rel="alternative" href="/atom.xml" title="Yiyuan Liu&#39;s Blog" type="application/atom+xml">
   
@@ -51,7 +48,7 @@
 		  <h1 class="header-author"><a href="/">Yiyuan Liu</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">Winter is coming</p>
+		<p class="header-subtitle">Learn and live.</p>
 		
 
 		<nav class="header-menu">
@@ -101,7 +98,7 @@
 			  <h1 class="header-author js-header-author">Yiyuan Liu</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>Winter is coming<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>Learn and live.<i class="icon icon-quo-right"></i></p>
 			
 			
 			
@@ -139,6 +136,91 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-knapsack" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/17/knapsack/">背包问题</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/17/knapsack/" class="archive-article-date">
+  	<time datetime="2018-03-17T11:05:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p><strong>输入</strong>：</p>
+<ul>
+<li>背包容量W</li>
+<li>n个物品：<ul>
+<li>价值$v_i$</li>
+<li>大小$w_i$</li>
+</ul>
+</li>
+</ul>
+<p><strong>输出</strong>：<br>    最优解$S \subseteq \lbrace 1,2,3,…,n \rbrace$；<br>    S中的物品在满足大小之和不超过背包容量W的条件下,最大化$\sum_{i\in S}{v_i}$</p>
+        
+          <a class="article-more-a" href="/2018/03/17/knapsack/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/17/knapsack/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-Path-Sum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -844,82 +926,6 @@
 
 
   
-    <article id="post-Android蓝牙健康设备开发：Health Device Profile(HDP)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/">Android蓝牙健康设备开发：Health Device Profile(HDP)</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/" class="archive-article-date">
-  	<time datetime="2017-06-23T13:13:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近按导师的要求做了个小项目：用Android手机跟蓝牙血压计通信。在网上查了很多资料，发现有许多文章是讲解Android蓝牙开发，但是在中文社区缺少针对实现HDP profile的蓝牙健康设备的文章，所以整理了相关知识和代码做一个总结。做了一点微小的贡献，谢谢大家。<br>1、相关概念<br>HDP：Health Device Profile顾名思义是针对蓝牙健康设备（如蓝牙血压计、蓝牙体重秤）的一个profile，由蓝牙技术联盟（Bluetooth SIG）发布。并不是所有蓝牙设备都可以采用HDP，只有经典蓝牙（BR/EDR）设备才可以。低功耗蓝牙设备，即蓝牙4.0及以上，采用的是GATT等profile。</p>
-        
-          <a class="article-more-a" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Android开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/23/Android蓝牙健康设备开发：Health Device Profile(HDP)/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1030,15 +1036,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Android开发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1047,6 +1049,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
